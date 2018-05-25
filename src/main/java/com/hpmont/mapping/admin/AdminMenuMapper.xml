@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.AdminMenuMapper">
+	<resultMap id="BaseResultMap" type="com.hpmont.domain.manual.admin.AdminMenu">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+		<result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+		<result column="parent_id" property="parentId" jdbcType="BIGINT" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="order_num" property="orderNum" jdbcType="VARCHAR" />
+		<result column="menu_type" property="menuType" jdbcType="INTEGER" />
+		<result column="authorities" property="authorities" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, menu_name, menu_url, parent_id,
+		description,order_num,menu_type,authorities
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from admin_menu
+		where id = #{id}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from admin_menu
+		where id = #{id}
+	</delete>
+	<insert id="insert" parameterType="com.hpmont.domain.manual.admin.AdminMenu">
+		insert into admin_menu ( menu_name, menu_url,
+		parent_id, description,order_num,menu_type,authorities)
+		values (#{menuName}, #{menuUrl},
+		#{parentId}, #{description},
+		#{orderNum},
+		#{menuType}, #{authorities})
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.manual.admin.AdminMenu">
+		update admin_menu
+		<set>
+			<if test="menuName != null">
+				menu_name = #{menuName},
+			</if>
+			<if test="menuUrl != null">
+				menu_url = #{menuUrl},
+			</if>
+			<if test="parentId != null">
+				parent_id = #{parentId},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="orderNum != null">
+				order_num = #{orderNum},
+			</if>
+			<if test="menuType != null">
+				menu_type = #{menuType},
+			</if>
+			<if test="authorities != null">
+				authorities = #{authorities},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+</mapper>

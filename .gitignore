@@ -1,0 +1,13 @@
+*.jar
+*.war
+*.log
+*.class
+*.iml
+/.idea/
+/.settings/
+/target/
+/test-output/
+
+
+
+

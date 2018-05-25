@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.AdminRoleManageMapper" >
+
+    <resultMap id="SearResultMap" type="com.hpmont.domain.manual.role.RoleAuth" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="is_system" property="isSystem" jdbcType="BIT" />
+        <collection property="authority" ofType="com.hpmont.domain.manual.role.Authority" column="role_id">
+            <result column="role_id" jdbcType="INTEGER" property="roleId" />
+            <result column="authorities" jdbcType="VARCHAR" property="authorities" />
+            <result column="menu_id" jdbcType="BIGINT" property="menuId" />
+        </collection>
+    </resultMap>
+    <!--查询角色和角色权限-->
+    <select id="selectRole" resultMap="SearResultMap" parameterType="java.lang.Integer" >
+        select r.id,r.name,r.description,r.is_system,a.role_id,a.authorities,a.menu_id
+        from admin_role r
+        LEFT JOIN admin_role_authority a ON r.id=a.role_id
+        where r.id=#{id,jdbcType=INTEGER}
+    </select>
+
+    <!--查询所有角色列表-->
+    <select id="selectAllRole" resultType="com.hpmont.domain.manual.admin.AdminRole">
+        select r.id,r.name,r.description,r.is_system isSystem,r.create_time createTime
+        from admin_role r ORDER by r.is_system desc,r.create_time DESC
+    </select>
+</mapper>

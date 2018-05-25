@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.AdminUserMapper" >
+    <select id="selectAllUser" resultType="com.hpmont.domain.manual.authority.AllUser"  >
+        select
+        au.id as id,au.user_name as userName,au.real_name as realName,au.department as department,
+		au.is_enable as isEnable,au.create_time as createTime,au.modify_time as modifyTime, ar.`name` as rolename
+        from admin_user au
+        LEFT JOIN admin_user_role aur ON au.id = aur.admin_id
+        LEFT JOIN admin_role ar ON aur.role_id = ar.id
+    </select>
+</mapper>

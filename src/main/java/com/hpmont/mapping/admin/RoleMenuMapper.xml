@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.AdminMenuMapper" >
+    <select id="selectByRoleId" resultMap="TreeMenuMap" parameterType="java.lang.Long" >
+        SELECT * from (select  m.id,m.menu_name, m.menu_url, m.parent_id, m.description,m.order_num,m.authorities
+        from admin_menu m,admin_role_authority r,admin_user_role u
+        where u.role_id=r.role_id and m.id=r.menu_id and u.admin_id = #{id,jdbcType=BIGINT} and m.menu_type=1) a,
+        (select  m.id subid,m.menu_name sub_menu_name, m.menu_url sub_menu_url, m.parent_id sub_parent_id, m.description sub_description,m.order_num sub_order_num
+        from admin_menu m,admin_role_authority r,admin_user_role u
+        where u.role_id=r.role_id and m.id=r.menu_id and u.admin_id = #{id,jdbcType=BIGINT} and m.menu_type=2) b
+        where a.id=b.sub_parent_id ORDER BY a.order_num,b.sub_order_num
+    </select>
+</mapper>

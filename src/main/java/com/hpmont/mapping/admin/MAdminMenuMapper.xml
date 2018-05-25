@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.AdminMenuMapper" >
+    <resultMap id="ShowMenuMap" type="com.hpmont.domain.manual.ShowAdminMenu" >
+        <result column="id" property="id" jdbcType="BIGINT" />
+        <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+        <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+        <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+        <result column="order_num" property="orderNum" jdbcType="VARCHAR" />
+        <result column="menu_type" property="menuType" jdbcType="INTEGER" />
+        <result column="authorities" property="authorities" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+    </resultMap>
+    <select id="selectMenu" resultMap="ShowMenuMap" parameterType="java.lang.Long" >
+        select am.menu_name,am.id,am.parent_id,am.menu_type,am.order_num,am.authorities,am.menu_url,am.description
+        from admin_menu am
+               order by order_num ASC
+    </select>
+    <select id="selectAuthority" resultType="com.hpmont.domain.manual.authority.UserAuthority" parameterType="com.hpmont.domain.manual.authority.UserAuthority" >
+        select aa.id as authorityId,am.id as menuId, ar.name as name, ar.id as roleId, am.menu_name as menuName, am.authorities as authorities
+        from admin_role_authority aa, admin_role ar, admin_menu am
+        where ar.id=aa.role_id
+               and am.id=aa.menu_id
+               <if test="menuName != null" >
+                    and am.menu_name LIKE CONCAT(#{menuName,jdbcType=VARCHAR}, '%')
+              </if>
+              <if test="name != null" >
+                    and ar.name LIKE CONCAT(#{name,jdbcType=VARCHAR}, '%')
+              </if>
+    </select>
+
+    <!--查询一级菜单列表-->
+    <select id="selectFirstMenus" resultMap="ShowMenuMap">
+        select am.menu_name,am.id,am.parent_id,am.menu_type,am.order_num,am.authorities,am.menu_url,am.description
+        from admin_menu am where am.menu_type=1
+    </select>
+
+    <resultMap id="TreeMenuMap" type="com.hpmont.domain.manual.TreeAdminMenu" >
+        <result column="id" property="id" jdbcType="BIGINT" />
+        <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+        <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+        <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+        <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+        <result column="menu_type" property="menuType" jdbcType="INTEGER" />
+        <result column="authorities" property="authorities" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <collection property="submenu" ofType="com.hpmont.domain.manual.admin.AdminMenu" column="subid">
+            <result column="subid" property="id" jdbcType="BIGINT" />
+            <result column="sub_menu_name" property="menuName" jdbcType="VARCHAR" />
+            <result column="sub_menu_url" property="menuUrl" jdbcType="VARCHAR" />
+            <result column="sub_parent_id" property="parentId" jdbcType="BIGINT" />
+            <result column="sub_order_num" property="orderNum" jdbcType="INTEGER" />
+            <result column="sub_menu_type" property="menuType" jdbcType="INTEGER" />
+            <result column="sub_authorities" property="authorities" jdbcType="VARCHAR" />
+            <result column="sub_description" property="description" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+
+    <select id="selectTreeMenu" resultMap="TreeMenuMap">
+        select f.id,f.menu_name,f.menu_url,f.parent_id,f.menu_type,f.order_num,f.authorities,f.description,
+        s.id subid,s.menu_name sub_menu_name,s.menu_url sub_menu_url,s.parent_id sub_parent_id,s.menu_type sub_menu_type,
+        s.order_num sub_order_num,s.authorities sub_authorities,s.description sub_description
+        from admin_menu f,admin_menu s
+        where f.id=s.parent_id and f.menu_type=1 order by f.order_num,s.order_num
+    </select>
+</mapper>

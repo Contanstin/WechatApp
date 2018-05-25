@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hpmont.dao.mapper.AdminRoleAuthorityMapper">
+
+	<resultMap id="BaseResultMap" type="com.hpmont.domain.manual.admin.AdminRoleAuthority">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="role_id" jdbcType="INTEGER" property="roleId" />
+		<result column="authorities" jdbcType="VARCHAR" property="authorities" />
+		<result column="menu_id" jdbcType="BIGINT" property="menuId" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, role_id, authorities, menu_id
+	</sql>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from
+		admin_role_authority
+		where id = #{id}
+	</delete>
+
+	<!--通过角色id删除权限数据 -->
+	<insert id="deleteByRoleId" parameterType="java.lang.Integer">
+		DELETE FROM
+		admin_role_authority where role_id=#{roleId}
+	</insert>
+
+	<insert id="insert" parameterType="com.hpmont.domain.manual.admin.AdminRoleAuthority">
+		insert into admin_role_authority (role_id, authorities,
+		menu_id)
+		values
+		(#{roleId}, #{authorities},
+		#{menuId})
+		<selectKey resultType="java.lang.Long" order="AFTER"
+			keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+</mapper>

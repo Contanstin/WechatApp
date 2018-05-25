@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.AdminUserRoleMapper">
+
+	<resultMap id="BaseResultMap" type="com.hpmont.domain.manual.admin.AdminUserRoleKey">
+		<id column="admin_id" property="adminId" jdbcType="BIGINT" />
+		<id column="role_id" property="roleId" jdbcType="BIGINT" />
+	</resultMap>
+
+	<!-- 根据id查询权限, 关联将admin_user_role查询出来 -->
+	<select id="selectAuthorityByRoleId" resultType="java.lang.String"
+		parameterType="java.util.List">
+		select authorities FROM admin_role_authority where authorities is not
+		null and LENGTH(trim(authorities))>1 and role_id in
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+			#{item}
+		</foreach>
+	</select>
+	<!--根据用户查询角色 -->
+	<select id="selectByuserId" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select admin_id,role_id FROM admin_user_role where
+		admin_id=#{adminId}
+	</select>
+
+	<!--根据角色统计 -->
+	<select id="countByRoleId" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
+		select count(1) FROM admin_user_role where
+		role_id=#{roleId}
+	</select>
+
+	<!--删除by用户id -->
+	<delete id="deleteByUserId" parameterType="java.lang.Long">
+		delete from
+		admin_user_role
+		where admin_id = #{adminId}
+	</delete>
+	<insert id="insert" parameterType="com.hpmont.domain.manual.admin.AdminUserRoleKey">
+		insert into admin_user_role
+		(admin_id, role_id)
+		values (#{adminId}, #{roleId})
+	</insert>
+
+	<select id="selectAdminRoleList" resultType="com.hpmont.domain.manual.authority.AdminRoleList">
+		select
+		id,`name`
+		from
+		admin_role
+	</select>
+</mapper>

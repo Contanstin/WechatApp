@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.PhoneUserMapper" >
+  <resultMap id="BaseResultMap" type="com.hpmont.domain.phone.PhoneUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="auth_num" property="authNum" jdbcType="VARCHAR" />
+    <result column="pass_check" property="passCheck" jdbcType="VARCHAR" />
+    <result column="language" property="language" jdbcType="VARCHAR" />
+    <result column="mcu_code" property="mcuCode" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="version_name" property="versionName" jdbcType="VARCHAR" />
+    <result column="version_type" property="versionType" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, username, password, company, email, phone_number, address, auth_num, pass_check, 
+    language, mcu_code, version, version_name
+  </sql>
+  <select id="findPhoneList" resultMap="BaseResultMap" resultType="com.hpmont.domain.search.SearchPhone">
+    SELECT  pu.id, pu.username, pu.password, pu.company, pu.email,
+    pu.phone_number, pu.address, pu.auth_num, pu.pass_check,
+    pu.language, pu.mcu_code, pu.version, pu.version_name ,pu.version_type
+    FROM phone_user_admin pua
+    RIGHT  JOIN phone_user pu ON  pu.id=pua.phone_user_id
+    WHERE pua.admin_id=#{adminId,jdbcType=VARCHAR}
+    <if test="username!=null and username!=''">
+    AND pu.username LIKE CONCAT('%',#{username,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="company!=null and company!=''">
+    AND pu.company LIKE CONCAT('%',#{company,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="phoneNumber!=null and phoneNumber!=''">
+    AND pu.phone_number LIKE CONCAT('%',#{phoneNumber,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="versionType!=null and versionType!=''">
+    AND pu.version_type =#{versionType,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="getUserPhone" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+   <include refid="Base_Column_List" />
+    from phone_user
+    WHERE 1=1
+      AND ( phone_number LIKE CONCAT('%',#{tempPhone,jdbcType=VARCHAR}, '%')
+      OR email LIKE CONCAT('%',#{tempPhone,jdbcType=VARCHAR}, '%')  )
+    limit  1
+  </select>
+
+  <insert id="insertPhoneUserAdmin" parameterType="com.hpmont.domain.phone.PhoneUserAdmin" >
+    insert into phone_user_admin (admin_id, phone_user_id
+    )
+    values (#{adminId,jdbcType=INTEGER}, #{phoneUserId,jdbcType=INTEGER}
+    )
+  </insert>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from phone_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hpmont.domain.phone.PhoneUser" useGeneratedKeys="true" keyProperty="id" keyColumn="id" >
+    insert into phone_user ( username, password,
+      company, email, phone_number, 
+      address, auth_num, pass_check, 
+      language, mcu_code, version, 
+      version_name ,version_type)
+    values ( #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
+      #{company,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{authNum,jdbcType=VARCHAR}, #{passCheck,jdbcType=VARCHAR}, 
+      #{language,jdbcType=VARCHAR}, #{mcuCode,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
+      #{versionName,jdbcType=VARCHAR} ,  #{versionType,jdbcType=INTEGER} )
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.phone.PhoneUser" >
+    update phone_user
+    <set >
+      <if test="username != null" >
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null" >
+        phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="authNum != null" >
+        auth_num = #{authNum,jdbcType=VARCHAR},
+      </if>
+      <if test="passCheck != null" >
+        pass_check = #{passCheck,jdbcType=VARCHAR},
+      </if>
+      <if test="language != null" >
+        language = #{language,jdbcType=VARCHAR},
+      </if>
+      <if test="mcuCode != null" >
+        mcu_code = #{mcuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="versionName != null" >
+        version_name = #{versionName,jdbcType=VARCHAR},
+      </if>
+      <if test="versionType != null" >
+        version_type = #{versionType,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updataPW" >
+    update phone_user set password= #{password,jdbcType=VARCHAR} where phone_number = #{phone,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.AdminRoleMapper">
+
+	<resultMap id="BaseResultMap" type="com.hpmont.domain.manual.admin.AdminRole">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="is_system" property="isSystem" jdbcType="BIT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, description, is_system, create_time, modify_time
+	</sql>
+
+
+	<insert id="insert" parameterType="com.hpmont.domain.manual.admin.AdminRole">
+		insert into admin_role (name, description,
+		is_system, create_time,
+		modify_time
+		)
+		values ( #{name}, #{description},
+		#{isSystem,jdbcType=BIT}, #{createTime},
+		#{modifyTime}
+		)
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="id">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	</insert>
+
+	<select id="selectAdminRoleList" resultType="com.hpmont.domain.manual.authority.AdminRoleList">
+		select
+		id,`name`
+		from
+		admin_role
+	</select>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.manual.admin.AdminRole">
+		update admin_role
+		<set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="isSystem != null">
+				is_system = #{isSystem,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		admin_role
+		where id = #{id}
+	</delete>
+
+</mapper>
