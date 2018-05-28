@@ -5,11 +5,9 @@
     <title></title>
     <link href="${base}/resources/css/common.css" rel="stylesheet" type="text/css" />
     <link href="${base}/resources/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-    <link href="${base}/resources/css/bootstrap-switch.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="${base}/resources/js/jquery.js"></script>
     <script type="text/javascript" src="${base}/resources/js/jquery.form.js"></script>
     <script type="text/javascript" src="${base}/resources/js/list.js"></script>
-    <script type="text/javascript" src="${base}/resources/js/bootstrap-switch.js"></script>
     <style type="text/css">
         table.gridtable td {
             border-width: 1px;
@@ -54,32 +52,27 @@
     <input type="button" onclick="addRecord();return false;" value="新增">
     <table id="listTable" class="list" style="margin-top:5px;">
         <tr>
-            <th>图片名称</th>
-            <th>储存名称</th>
+            <th>菜单名称</th>
+            <th>菜单url</th>
+            <th>描述</th>
             <th>排序</th>
-            <th>是否启用</th>
-            <th>创建时间</th>
-            <th>修改时间</th>
+            <th>是否使用</th>
             <th>操作</th>
         </tr>
-    [#list page.list as obj]
+    [#list page.list as m]
         <tr>
-            <td>${obj.imageName}</td>
-            <td>${obj.imageUrl}</td>
-            <td>${obj.orderNum}</td>
+            <td>${m.menuName}</td>
+            <td>${m.menuUrl}</td>
+            <td>${m.description}</td>
+            <td>${m.orderNum}</td>
             <td>
-                [#if obj.status==1 ]启用
-                [#elseif obj.status==2 ]禁用
+                [#if m.status==1 ]启用
+                [#elseif m.status==2 ]禁用
                 [/#if]
             </td>
-            <td>${(obj.gmtCreate?string('yyyy-MM-dd'))!}</td>
-            <td>${(obj.gmtModified?string('yyyy-MM-dd'))!}</td>
-            <td>
-                <button  onclick="showPic('${obj.realName}');return false;">预览</button>
-                <button  onclick="download('${obj.realName}');return false;">下载</button>
-                <button onclick="modify('${obj.id}','${obj.imageName}','${obj.orderNum}','${obj.status}');
+            <td>   <button onclick="modify('${m.id}','${m.menuName}','${m.menuUrl}','${m.description}','${m.orderNum}','${m.status}');
                   return false;">修改</button>
-                <button onclick="deleteObj('${obj.id}','${obj.realName}');return false;">删除</button>
+                <button onclick="deleteMenu('${m.id}');return false;">删除</button>
             </td>
         </tr>
     [/#list]
@@ -95,18 +88,27 @@
         <input name="id" id="id" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
-                <td colspan="2">轮播图基本信息</td>
+                <td colspan="2">微信菜单基本信息</td>
             </tr>
             <tr>
-                <td><span class="requiredField">*</span>图片名称:</td>
-                <td><input type="text"  name="imageName" id="qimageName" value=""></td>
+                <td><span class="requiredField">*</span>菜单名称:</td>
+                <td><input type="text"  name="menuName" id="qmenuName" value=""></td>
+
             </tr>
             <tr>
-                <td><span class="requiredField">*</span>图片排序:</td>
-                <td><input type="text"  name="orderNum" id="qorderNum" value="" maxlength="2"></td>
+                <td><span class="requiredField">*</span>菜单url:</td>
+                <td><input type="text"  name="menuUrl" id="qmenuUrl" value="" ></td>
             </tr>
             <tr>
-                <td><span class="requiredField">*</span>是否启用:</td>
+                <td><span class="requiredField">*</span>描述:</td>
+                <td><input type="text"  name="description" id="qdescription" value="" ></td>
+            </tr>
+            <tr>
+                <td><span class="requiredField">*</span>排序:</td>
+                <td><input type="text"  name="orderNum" id="qorderNum" value="" ></td>
+            </tr>
+            <tr>
+                <td><span class="requiredField">*</span>是否使用:</td>
                 <td colspan="2">
                     <select name="status" id="qstatus">
                         <option  value="1" >启用</option>
@@ -114,10 +116,7 @@
                     </select>
                 </td>
             </tr>
-            <tr>
-                <td>请选择文件:</td>
-                <td><input type="file" name="file"></td>
-            </tr>
+
             <tr align="center">
                 <td colspan="2"><input type="submit" id="btn"  value="保存">
                     &nbsp; <button type="button" onclick="cancel();">取消</button>
@@ -134,34 +133,18 @@
 <script type="text/javascript">
     var time = 200;
 
-    [#--$(function(){--]
-        [#--var versionType = '${search.versionType}';--]
-        [#--if(versionType==1){--]
-            [#--$('#versionType').val(1);--]
-        [#--} else if (versionType==2){--]
-            [#--$('#versionType').val(2);--]
-        [#--}else if(versionType==3){--]
-            [#--$('#versionType').val(3);--]
-        [#--}--]
-        [#--var authCode = '${search.authCode}';--]
-        [#--if(authCode){--]
-            [#--$('#authCode').val(authCode);--]
-        [#--}--]
+    $(function(){
 
-    [#--});--]
+
+    });
 
     //异步提交
     $('#dataForm').submit(function() {
-        if(!$('#qimageName').val()&&!$('#qorderNum').val()){
+
+        if(!$('#qmenuName').val()&&!$('#qorderNum').val()&&!$('#qdescription').val()&&!$('#qmenuUrl').val()){
             alert("输入项不能为空");
             return false;
         }
-        var orderNum = $('#qorderNum').val();
-        if(!orderNum||isNaN(orderNum)){
-            alert("输入格式不正确");
-            return false;
-        }
-
         $("#btn").attr("disabled", true);
         var option = {
             type : 'POST',
@@ -185,40 +168,34 @@
         $('#back').show();
         $('#dataDiv').show(time);
     }
-    var modify = function(id,imageName, orderNum,status){
+    var modify = function(id,menuName, menuUrl,description,orderNum,status){
         $('#id').val(id);
         if(status==1){
             $('#qstatus').val(1);
         } else if (status==2){
             $('#qstatus').val(2);
         }
-        $('#qimageName').val(imageName);
+        $('#qmenuName').val(menuName);
+        $('#qmenuUrl').val(menuUrl);
+        $('#qdescription').val(description);
         $('#qorderNum').val(orderNum);
         $('#back').show();
         $('#dataDiv').show(time);
     }
 
-    var deleteObj= function(id,realName){
+    var deleteMenu = function(id){
         if(confirm("确认删除吗")){
             $.ajax({
                 url:'delete.jhtml',
                 type:'POST',
                 data:{
-                    id:id ,
-                    realName:realName
+                    id:id
                 },
                 success:function(data){
                     window.location.reload();
                 }
             });
         }
-    }
-
-    var showPic= function(realName){
-        window.location.href="showPic.jhtml?realName="+realName;
-    }
-    var download= function(realName){
-        window.location.href="download.jhtml?realName="+realName;
     }
 
     var cancel = function(){
