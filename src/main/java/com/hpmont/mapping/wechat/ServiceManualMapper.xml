@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hpmont.dao.mapper.wechat.ServiceManualMapper" >
+  <resultMap id="BaseResultMap" type="com.hpmont.domain.wechat.ServiceManual" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="manual_name" property="manualName" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="manual_type" property="manualType" jdbcType="TINYINT" />
+    <result column="manual_format" property="manualFormat" jdbcType="VARCHAR" />
+    <result column="manual_url" property="manualUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="BIT" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, manual_name, real_name, manual_type, manual_format, manual_url, status, gmt_create, 
+    gmt_modified
+  </sql>
+  <select id="findManualList" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchManual" >
+    select
+    sm.id, sm.manual_name, sm.real_name,sm.manual_type, mt.name, sm.manual_format, sm.manual_url, sm.status
+    from service_manual as sm
+    LEFT JOIN
+    manual_type mt ON  sm.manual_type=mt.id
+    where 1=1
+    <if test="manualName!=null and manualName!=''">
+      AND sm.manual_name LIKE CONCAT('%',#{manualName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="manualType!=null and manualType!=''">
+      AND sm.manual_type =#{manualType,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="findManualType" resultMap="BaseResultMap">
+   SELECT * FROM manual_type
+  </select>
+
+  <select id="findManualListByType" resultMap="BaseResultMap"  parameterType="com.hpmont.domain.search.SearchManual">
+    select
+    id, manual_name,manual_url
+    from service_manual
+    WHERE status=1
+    <if test="manualName!=null and manualName!=''">
+      AND manual_name LIKE CONCAT('%',#{manualName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="manualType!=null and manualType!=''">
+      AND manual_type =#{manualType,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from service_manual
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hpmont.domain.wechat.ServiceManual" >
+    insert into service_manual (id, manual_name, real_name, 
+      manual_type, manual_format, manual_url, 
+      status, gmt_create, gmt_modified
+      )
+    values (#{id,jdbcType=INTEGER}, #{manualName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, 
+      #{manualType,jdbcType=TINYINT}, #{manualFormat,jdbcType=VARCHAR}, #{manualUrl,jdbcType=VARCHAR}, 
+      #{status,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.wechat.ServiceManual" >
+    update service_manual
+    <set >
+      <if test="manualName != null" >
+        manual_name = #{manualName,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="manualType != null" >
+        manual_type = #{manualType,jdbcType=TINYINT},
+      </if>
+      <if test="manualFormat != null" >
+        manual_format = #{manualFormat,jdbcType=VARCHAR},
+      </if>
+      <if test="manualUrl != null" >
+        manual_url = #{manualUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

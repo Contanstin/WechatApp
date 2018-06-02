@@ -5,11 +5,9 @@
     <title></title>
     <link href="${base}/resources/css/common.css" rel="stylesheet" type="text/css" />
     <link href="${base}/resources/css/bootstrap.css" rel="stylesheet" type="text/css"/>
-    <link href="${base}/resources/css/bootstrap-switch.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="${base}/resources/js/jquery.js"></script>
     <script type="text/javascript" src="${base}/resources/js/jquery.form.js"></script>
     <script type="text/javascript" src="${base}/resources/js/list.js"></script>
-    <script type="text/javascript" src="${base}/resources/js/bootstrap-switch.js"></script>
     <style type="text/css">
         table.gridtable td {
             border-width: 1px;
@@ -35,15 +33,10 @@
     <form action="list.jhtml" id="listForm" >
             <div class="path">
                 <div style="float: left" >
-                    <span  class="arrow">软件名称:</span>
-                    <select name="versionType" id="versionType" >
-                        <option  value="" >全部</option>
-                        <option  value="1" >Mont70</option>
-                        <option  value="2" >Mont71</option>
-                        <option  value="3" >HD5L</option>
-                    </select>
-               <span  class="arrow">授权码:</span>
-                    <input type="text" name="authCode" id="authCode"  />
+               <span  class="arrow">故障名称:</span>
+                    <input type="text" name="faultName" id="faultName"  />
+                    <span  class="arrow">故障代码:</span>
+                    <input type="text" name="faultCode" id="faultCode"  />
                 </div>
                 <button type="button" onclick=" $.firstPageSkip();">查询</button>
          </div>
@@ -54,17 +47,27 @@
     <input type="button" onclick="addRecord();return false;" value="新增">
     <table id="listTable" class="list" style="margin-top:5px;">
         <tr>
-            <th>软件名称</th>
-            <th>授权码</th>
+            <th>故障名称</th>
+            <th>故障代码</th>
+            <th>含义</th>
+            <th>常见解决办法</th>
+            <th>是否使用</th>
             <th>操作</th>
         </tr>
-    [#list page.list as auth]
+    [#list page.list as obj]
         <tr>
-            <td>${auth.versionName}</td>
-            <td>${auth.authCode}</td>
-            <td>   <button onclick="modify('${auth.id}','${auth.versionType}','${auth.authCode}');
+            <td>${obj.faultName}</td>
+            <td>${obj.faultCode}</td>
+            <td>${obj.faultImplication}</td>
+            <td>${obj.faultSolution}</td>
+            <td>
+                [#if obj.status==1 ]启用
+                [#elseif obj.status==2 ]禁用
+                [/#if]
+            </td>
+            <td>   <button onclick="modify('${obj.id}','${obj.faultName}','${obj.faultCode}','${obj.faultImplication}','${obj.faultSolution}','${obj.status}');
                   return false;">修改</button>
-                <button onclick="deleteAuth('${auth.id}');return false;">删除</button>
+                <button onclick="deleteMenu('${obj.id}');return false;">删除</button>
             </td>
         </tr>
     [/#list]
@@ -80,27 +83,35 @@
         <input name="id" id="id" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
-                <td colspan="2">软件授权基本信息</td>
+                <td colspan="2">故障说明基本信息</td>
             </tr>
             <tr>
-                <td><span class="requiredField">*</span>软件名称:</td>
-                [#--<td><input type="text"  name="versionName" id="qversionName" value=""></td>--]
+                <td><span class="requiredField">*</span>故障名称:</td>
+                <td><input type="text"  name="faultName" id="qfaultName" value=""></td>
+
+            </tr>
+            <tr>
+                <td><span class="requiredField">*</span>故障代码:</td>
+                <td><input type="text"  name="faultCode" id="qfaultCode" value="" ></td>
+            </tr>
+            <tr>
+                <td><span class="requiredField">*</span>含义:</td>
+                <td><input type="text"  name="faultImplication" id="qfaultImplication" value="" ></td>
+            </tr>
+            <tr>
+                <td><span class="requiredField">*</span>常见解决办法:</td>
+                <td><input type="text"  name="faultSolution" id="qfaultSolution" value="" ></td>
+            </tr>
+            <tr>
+                <td><span class="requiredField">*</span>是否使用:</td>
                 <td colspan="2">
-                    <select name="versionType" id="qversionType">
-                        <option  value="1" >Mont70</option>
-                        <option  value="2" >Mont71</option>
-                        <option  value="3" >HD5L</option>
+                    <select name="status" id="qstatus">
+                        <option  value="1" >启用</option>
+                        <option  value="2" >禁用</option>
                     </select>
                 </td>
             </tr>
-            <tr>
-                <td><span class="requiredField">*</span>授权码:</td>
-                <td><input type="text"  name="authCode" id="qauthCode" value="" maxlength="2"></td>
-            </tr>
-            <tr>
-                <td>请选择文件:</td>
-                <td><input type="file" name="file"></td>
-            </tr>
+
             <tr align="center">
                 <td colspan="2"><input type="submit" id="btn"  value="保存">
                     &nbsp; <button type="button" onclick="cancel();">取消</button>
@@ -118,17 +129,13 @@
     var time = 200;
 
     $(function(){
-        var versionType = '${search.versionType}';
-        if(versionType==1){
-            $('#versionType').val(1);
-        } else if (versionType==2){
-            $('#versionType').val(2);
-        }else if(versionType==3){
-            $('#versionType').val(3);
+        var faultName = '${search.faultName}';
+        if(faultName){
+            $('#faultName').val(faultName);
         }
-        var authCode = '${search.authCode}';
-        if(authCode){
-            $('#authCode').val(authCode);
+        var faultCode = '${search.faultCode}';
+        if(faultCode){
+            $('#faultCode').val(faultCode);
         }
 
     });
@@ -136,26 +143,22 @@
     //异步提交
     $('#dataForm').submit(function() {
 
-        var authCode = $('#qauthCode').val();
-        if(!authCode||isNaN(authCode)){
-            alert("输入格式不正确");
+        if(!$('#qfaultName').val()&&!$('#qfaultCode').val()&&!$('#qfaultImplication').val()&&!$('#qfaultSolution').val()){
+            alert("输入项不能为空");
             return false;
         }
-
         $("#btn").attr("disabled", true);
         var option = {
             type : 'POST',
             dataType:'json',
-            url: "upload.jhtml",
+            url: "edit.jhtml",
             success : function(data) {
                 var obj = eval('(' + data + ')')
                 if(obj.code=="SUCCESS"){
                     window.location.reload();
                 }else if(obj.code=="FAIL"){
-                    alert("已存在重复授权码，不可保存");
+                    alert(obj.message);
                     window.location.reload();
-                }else{
-                    alert("保存失败");
                 }
             }
         };
@@ -167,21 +170,22 @@
         $('#back').show();
         $('#dataDiv').show(time);
     }
-    var modify = function(id,versionType, authCode){
+    var modify = function(id,faultName, faultCode,faultImplication,faultSolution,status){
         $('#id').val(id);
-        if(versionType==1){
-            $('#qversionType').val(1);
-        } else if (versionType==2){
-            $('#qversionType').val(2);
-        }else {
-            $('#qversionType').val(3);
+        if(status==1){
+            $('#qstatus').val(1);
+        } else if (status==2){
+            $('#qstatus').val(2);
         }
-        $('#qauthCode').val(authCode);
+        $('#qfaultName').val(faultName);
+        $('#qfaultCode').val(faultCode);
+        $('#qfaultImplication').val(faultImplication);
+        $('#qfaultSolution').val(faultSolution);
         $('#back').show();
         $('#dataDiv').show(time);
     }
 
-    var deleteAuth = function(id){
+    var deleteMenu = function(id){
         if(confirm("确认删除吗")){
             $.ajax({
                 url:'delete.jhtml',

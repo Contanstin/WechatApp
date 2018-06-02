@@ -17,38 +17,38 @@
             var $inputForm = $("#loginForm");
             var $captchaImage = $("#captchaImage");
             // 表单验证
-            $inputForm.validate({
-                rules: {
-                    userName: {
-                        required: true,
-                        minlength: 2,
-                        maxlength: 20,
-                    },
-                    password: {
-                        required: true,
-                        minlength: 4,
-                        maxlength: 20
-                    },
-                    captcha: {
-                        rangelength:[4,4]
-                    }
-                },
-                messages: {
-                    userName: {
-                        required: "${message("system.validate.required")}",
-                        minlength: "${message("system.validate.minlength")}",
-                        maxlength: "${message("system.validate.maxlength")}"
-                    },
-                    password: {
-                        required: "${message("system.validate.required")}",
-                        minlength: "${message("system.validate.minlength")}",
-                        maxlength: "${message("system.validate.maxlength")}"
-                    },
-                    captcha: {
-                        rangelength: "${message("system.validate.captcha")}"
-                    }
-                }
-            });
+            <#--$inputForm.validate({-->
+                <#--rules: {-->
+                    <#--userName: {-->
+                        <#--required: true,-->
+                        <#--minlength: 2,-->
+                        <#--maxlength: 20,-->
+                    <#--},-->
+                    <#--password: {-->
+                        <#--required: true,-->
+                        <#--minlength: 4,-->
+                        <#--maxlength: 20-->
+                    <#--},-->
+                    <#--captcha: {-->
+                        <#--rangelength:[4,4]-->
+                    <#--}-->
+                <#--},-->
+                <#--messages: {-->
+                    <#--userName: {-->
+                        <#--required: "${message("system.validate.required")}",-->
+                        <#--minlength: "${message("system.validate.minlength")}",-->
+                        <#--maxlength: "${message("system.validate.maxlength")}"-->
+                    <#--},-->
+                    <#--password: {-->
+                        <#--required: "${message("system.validate.required")}",-->
+                        <#--minlength: "${message("system.validate.minlength")}",-->
+                        <#--maxlength: "${message("system.validate.maxlength")}"-->
+                    <#--},-->
+                    <#--captcha: {-->
+                        <#--rangelength: "${message("system.validate.captcha")}"-->
+                    <#--}-->
+                <#--}-->
+            <#--});-->
             // 更换验证码
             $captchaImage.click( function() {
                 $captchaImage.attr("src", "${base}/common/captcha.jhtml?captchaId=${captchaId}&timestamp=" + (new Date()).valueOf());

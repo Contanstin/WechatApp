@@ -3,10 +3,7 @@ package com.hpmont.controller.wechat;
 import com.github.pagehelper.PageInfo;
 import com.hpmont.controller.BaseController;
 import com.hpmont.domain.page.PageSearch;
-import com.hpmont.domain.phone.PhoneUser;
-import com.hpmont.domain.wechat.Slideshow;
 import com.hpmont.domain.wechat.WechatMenu;
-import com.hpmont.service.wechat.ISlideshowService;
 import com.hpmont.service.wechat.IWechatMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,13 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-
 import java.util.List;
-
-import static com.hpmont.constants.Constant.HD5L;
-import static com.hpmont.constants.Constant.MONT70;
-import static com.hpmont.constants.Constant.MONT71;
 
 /**
  * Created by 徐 on 2018/5/22.

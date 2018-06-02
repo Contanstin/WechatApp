@@ -11,21 +11,16 @@
         <property name="unauthorizedUrl" value="/common/unauthorized.jhtml" />
         <property name="filterChainDefinitions">
             <value>
-                /test/** = anon
+                /slideshow/** = anon
+                /manual/** = anon
+                /wechat_menu/** = anon
+                /fault/** = anon
                 /index.jhtml = user
                 /logout.jhtml = logout
                 /resource/** = anon
                 /common/captcha.jhtml = anon
                 /common/main.jhtml = user
-                <!--/coupon/addCopon.jhtml = perms["copon:add"]-->
-                <!--/coupon/getCoponList.jhtml = perms["copon:list"]-->
-                <!--/studentRequest/sRequestList.jhtml = perms["request:studentrequestlist"]-->
-                <!--/refund/refundList.jhtml = perms["order:refundlist"]-->
-                <!--/aliRefund/refundOrder.jhtml=perms["order:refundlist:openter"]-->
-                <!--/giroPay/giroList.jhtml = perms["order:girolist"]-->
-                <!--/aliGiroPay/giroPay.jhtml=perms["order:girolist:openter"]-->
-                <!--/order/orderList.jhtml=perms["order:orderlist"]-->
-                /** = user
+                /** = anon
             </value>
         </property>
         <property name="filters">
