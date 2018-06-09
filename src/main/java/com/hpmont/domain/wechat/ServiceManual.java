@@ -17,6 +17,10 @@ public class ServiceManual {
 
     private String manualUrl;
 
+    private String versionName;
+
+    private Integer versionType;
+
     private Integer status;
 
     private Date gmtCreate;
@@ -95,11 +99,27 @@ public class ServiceManual {
         this.gmtModified = gmtModified;
     }
 
+    public Integer getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(Integer versionType) {
+        this.versionType = versionType;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 }

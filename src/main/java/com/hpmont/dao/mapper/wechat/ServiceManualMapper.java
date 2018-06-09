@@ -17,5 +17,7 @@ public interface ServiceManualMapper {
 
     List<ServiceManual> findManualType();
 
-    List<ServiceManual> findManualListByType(SearchManual search);
+    List<ServiceManual> findManualListByApp(SearchManual search);
+
+    List<ServiceManual> findVersionType();
 }

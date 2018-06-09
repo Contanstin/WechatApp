@@ -13,6 +13,10 @@ public class FaultDescription {
 
     private String faultSolution;
 
+    private String versionName;
+
+    private Integer versionType;
+
     private Integer status;
 
     private Date gmtCreate;
@@ -81,5 +85,21 @@ public class FaultDescription {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
+    }
+
+    public Integer getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(Integer versionType) {
+        this.versionType = versionType;
     }
 }

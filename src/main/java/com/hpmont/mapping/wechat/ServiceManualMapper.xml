@@ -18,10 +18,12 @@
   </sql>
   <select id="findManualList" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchManual" >
     select
-    sm.id, sm.manual_name, sm.real_name,sm.manual_type, mt.name, sm.manual_format, sm.manual_url, sm.status
+    sm.id, sm.manual_name, sm.real_name,sm.manual_type, dm.name, sm.manual_format, sm.manual_url, sm.status,dv.name AS versionName
     from service_manual as sm
     LEFT JOIN
-    manual_type mt ON  sm.manual_type=mt.id
+    dict_manual dm ON  sm.manual_type=dm.id
+    LEFT JOIN
+    dict_version dv ON  sm.version_type=dv.id
     where 1=1
     <if test="manualName!=null and manualName!=''">
       AND sm.manual_name LIKE CONCAT('%',#{manualName,jdbcType=VARCHAR}, '%')
@@ -29,13 +31,20 @@
     <if test="manualType!=null and manualType!=''">
       AND sm.manual_type =#{manualType,jdbcType=VARCHAR}
     </if>
+    <if test="versionType!=null and versionType!=0">
+      AND sm.version_type =#{versionType,jdbcType=INTEGER}
+    </if>
   </select>
 
   <select id="findManualType" resultMap="BaseResultMap">
-   SELECT * FROM manual_type
+   SELECT * FROM dict_manual
   </select>
 
-  <select id="findManualListByType" resultMap="BaseResultMap"  parameterType="com.hpmont.domain.search.SearchManual">
+  <select id="findVersionType" resultMap="BaseResultMap">
+   SELECT * FROM dict_version
+  </select>
+
+  <select id="findManualListByApp" resultMap="BaseResultMap"  parameterType="com.hpmont.domain.search.SearchManual">
     select
     id, manual_name,manual_url
     from service_manual
@@ -46,6 +55,9 @@
     <if test="manualType!=null and manualType!=''">
       AND manual_type =#{manualType,jdbcType=VARCHAR}
     </if>
+    <if test="versionType!=null and versionType!=0">
+      AND version_type =#{versionType,jdbcType=INTEGER}
+    </if>
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -54,12 +66,12 @@
   </delete>
   <insert id="insert" parameterType="com.hpmont.domain.wechat.ServiceManual" >
     insert into service_manual (id, manual_name, real_name, 
-      manual_type, manual_format, manual_url, 
-      status, gmt_create, gmt_modified
+      manual_type, manual_format, manual_url, version_type ,
+      status, gmt_create
       )
     values (#{id,jdbcType=INTEGER}, #{manualName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, 
-      #{manualType,jdbcType=TINYINT}, #{manualFormat,jdbcType=VARCHAR}, #{manualUrl,jdbcType=VARCHAR}, 
-      #{status,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      #{manualType,jdbcType=TINYINT}, #{manualFormat,jdbcType=VARCHAR}, #{manualUrl,jdbcType=VARCHAR},  #{versionType,jdbcType=BIT},
+      #{status,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}
       )
   </insert>
 
@@ -80,6 +92,9 @@
       </if>
       <if test="manualUrl != null" >
         manual_url = #{manualUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="versionType != null" >
+        version_type = #{versionType,jdbcType=VARCHAR},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=BIT},

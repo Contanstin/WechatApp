@@ -26,18 +26,26 @@
     <if test="faultCode!=null and faultCode!=''">
       AND fault_code LIKE CONCAT('%',#{faultCode,jdbcType=VARCHAR}, '%')
     </if>
+    <if test="versionType!=null and versionType!=0">
+      AND version_type =#{versionType,jdbcType=INTEGER}
+    </if>
   </select>
 
   <select id="findFaultList" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchFault" >
     select
-    <include refid="Base_Column_List" />
-    from fault_description
+    fd.id, fd.fault_name, fd.fault_code, fd.fault_implication, fd.fault_solution, fd.status,dv.name AS versionName
+    from fault_description fd
+    LEFT JOIN
+    dict_version dv ON  fd.version_type=dv.id
     where 1 =1
     <if test="faultName!=null and faultName!=''">
-      AND fault_name LIKE CONCAT('%',#{faultName,jdbcType=VARCHAR}, '%')
+      AND fd.fault_name LIKE CONCAT('%',#{faultName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="faultCode!=null and faultCode!=''">
-      AND fault_code LIKE CONCAT('%',#{faultCode,jdbcType=VARCHAR}, '%')
+      AND fd.fault_code LIKE CONCAT('%',#{faultCode,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="versionType!=null and versionType!=0">
+      AND fd.version_type =#{versionType,jdbcType=INTEGER}
     </if>
   </select>
 
@@ -48,67 +56,13 @@
   </delete>
   <insert id="insert" parameterType="com.hpmont.domain.wechat.FaultDescription" >
     insert into fault_description (id, fault_name, fault_code, 
-      fault_implication, fault_solution, status, 
+      fault_implication, fault_solution, status, version_type ,
       gmt_create, gmt_modified)
     values (#{id,jdbcType=INTEGER}, #{faultName,jdbcType=VARCHAR}, #{faultCode,jdbcType=VARCHAR}, 
-      #{faultImplication,jdbcType=VARCHAR}, #{faultSolution,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, 
+      #{faultImplication,jdbcType=VARCHAR}, #{faultSolution,jdbcType=VARCHAR}, #{status,jdbcType=BIT},  #{versionType,jdbcType=BIT},
       #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hpmont.domain.wechat.FaultDescription" >
-    insert into fault_description
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="faultName != null" >
-        fault_name,
-      </if>
-      <if test="faultCode != null" >
-        fault_code,
-      </if>
-      <if test="faultImplication != null" >
-        fault_implication,
-      </if>
-      <if test="faultSolution != null" >
-        fault_solution,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="gmtCreate != null" >
-        gmt_create,
-      </if>
-      <if test="gmtModified != null" >
-        gmt_modified,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="faultName != null" >
-        #{faultName,jdbcType=VARCHAR},
-      </if>
-      <if test="faultCode != null" >
-        #{faultCode,jdbcType=VARCHAR},
-      </if>
-      <if test="faultImplication != null" >
-        #{faultImplication,jdbcType=VARCHAR},
-      </if>
-      <if test="faultSolution != null" >
-        #{faultSolution,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=BIT},
-      </if>
-      <if test="gmtCreate != null" >
-        #{gmtCreate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="gmtModified != null" >
-        #{gmtModified,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.wechat.FaultDescription" >
     update fault_description
     <set >
@@ -124,6 +78,9 @@
       <if test="faultSolution != null" >
         fault_solution = #{faultSolution,jdbcType=VARCHAR},
       </if>
+      <if test="versionType != null" >
+        version_type = #{versionType,jdbcType=VARCHAR},
+      </if>
       <if test="status != null" >
         status = #{status,jdbcType=BIT},
       </if>
@@ -136,15 +93,5 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hpmont.domain.wechat.FaultDescription" >
-    update fault_description
-    set fault_name = #{faultName,jdbcType=VARCHAR},
-      fault_code = #{faultCode,jdbcType=VARCHAR},
-      fault_implication = #{faultImplication,jdbcType=VARCHAR},
-      fault_solution = #{faultSolution,jdbcType=VARCHAR},
-      status = #{status,jdbcType=BIT},
-      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
-      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>

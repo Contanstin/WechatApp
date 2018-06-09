@@ -58,12 +58,24 @@ public class ServiceManualController extends BaseController{
         return list;
     }
 
-    @RequestMapping(value = "/findManualListByType")
+    @RequestMapping(value = "/findVersionType")
     @ResponseBody
-    public List<ServiceManual> findManualListByType(@RequestBody SearchManual search){
+    public List<ServiceManual> findVersionType(){
         List<ServiceManual> list=null;
         try {
-            list= manualService.findManualListByType(search);
+            list= manualService.findVersionType();
+        } catch (Exception e) {
+            logger.error("查询软件版本失败",e);
+        }
+        return list;
+    }
+
+    @RequestMapping(value = "/findManualListByApp")
+    @ResponseBody
+    public List<ServiceManual> findManualListByApp(@RequestBody SearchManual search){
+        List<ServiceManual> list=null;
+        try {
+            list= manualService.findManualListByApp(search);
         } catch (Exception e) {
             logger.error("查询手册种类失败",e);
         }
@@ -83,12 +95,12 @@ public class ServiceManualController extends BaseController{
                         if (!f.getParentFile().exists()) {
                             f.getParentFile().mkdirs();
                         }
-                        realName= new Date().getTime()+"";
+                        manual.setManualName(filename.substring(0, filename.lastIndexOf(".")));
+                        manual.setManualFormat(filename.substring(filename.lastIndexOf(".") + 1));
+                        realName= new Date().getTime()+"."+manual.getManualFormat();
                         multipartFile.transferTo(new File(baseUrl + realName));
                         manual.setManualUrl(projectPath+"manual/download?realName="+realName);
-                        manual.setManualName(filename);
                         manual.setRealName(realName);
-                        manual.setManualFormat(filename.substring(filename.lastIndexOf(".") + 1));
                     }
                     if (null==manual.getId()){
                         manualService.insert(manual);

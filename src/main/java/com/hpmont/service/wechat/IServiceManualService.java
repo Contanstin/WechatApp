@@ -20,5 +20,7 @@ public interface IServiceManualService {
 
     void delete(Integer id);
 
-    List<ServiceManual> findManualListByType(SearchManual search);
+    List<ServiceManual> findManualListByApp(SearchManual search);
+
+    List<ServiceManual> findVersionType();
 }

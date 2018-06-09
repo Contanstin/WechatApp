@@ -33,6 +33,10 @@
     <form action="list.jhtml" id="listForm" >
             <div class="path">
                 <div style="float: left" >
+                    <span  class="arrow">软件版本:</span>
+                    <select name="versionType" class="versionType" id="versionType" style="width: 120px" >
+
+                    </select>
                <span  class="arrow">故障名称:</span>
                     <input type="text" name="faultName" id="faultName"  />
                     <span  class="arrow">故障代码:</span>
@@ -51,6 +55,7 @@
             <th>故障代码</th>
             <th>含义</th>
             <th>常见解决办法</th>
+            <th>软件版本</th>
             <th>是否使用</th>
             <th>操作</th>
         </tr>
@@ -60,12 +65,13 @@
             <td>${obj.faultCode}</td>
             <td>${obj.faultImplication}</td>
             <td>${obj.faultSolution}</td>
+            <td>${obj.versionName}</td>
             <td>
                 [#if obj.status==1 ]启用
                 [#elseif obj.status==2 ]禁用
                 [/#if]
             </td>
-            <td>   <button onclick="modify('${obj.id}','${obj.faultName}','${obj.faultCode}','${obj.faultImplication}','${obj.faultSolution}','${obj.status}');
+            <td>   <button onclick="modify('${obj.id}','${obj.faultName}','${obj.Code}','${obj.Implication}','${obj.Solution}','${obj.status}');
                   return false;">修改</button>
                 <button onclick="deleteMenu('${obj.id}');return false;">删除</button>
             </td>
@@ -103,6 +109,14 @@
                 <td><input type="text"  name="faultSolution" id="qfaultSolution" value="" ></td>
             </tr>
             <tr>
+                <td>软件版本:</td>
+                <td colspan="2">
+                    <select name="versionType" class="versionType"  >
+
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td><span class="requiredField">*</span>是否使用:</td>
                 <td colspan="2">
                     <select name="status" id="qstatus">
@@ -137,13 +151,39 @@
         if(faultCode){
             $('#faultCode').val(faultCode);
         }
+        var versionType = '${search.versionType}';
+        if(versionType){
+            $('#versionType').val(versionType);
+        }
+        $.ajax({
+            url:'../manual/findVersionType.jhtml',
+            type:'GET',
+            dataType: 'json' ,
+            data:{
+            },
+            success:function(data){
+                $(".versionType").empty()
+                $(".versionType").append("<option  value=''>全部</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var str="";
+                    if (data[i].id==parseInt(versionType)){
+                        str = "<option  value='"+data[i].id+"' selected='selected' > "
+                                +data[i].name+"</option>"
+                    }else {
+                        str = "<option  value='"+data[i].id+"'> "
+                                +data[i].name+"</option>"
+                    }
+                    $(".versionType").append(str)
+                };
+            }
+        });
 
     });
 
     //异步提交
     $('#dataForm').submit(function() {
 
-        if(!$('#qfaultName').val()&&!$('#qfaultCode').val()&&!$('#qfaultImplication').val()&&!$('#qfaultSolution').val()){
+        if(!$('#qfaultName').val()||!$('#qfaultCode').val()||!$('#qfaultImplication').val()||!$('#qfaultSolution').val()){
             alert("输入项不能为空");
             return false;
         }

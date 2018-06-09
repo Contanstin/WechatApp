@@ -11,6 +11,7 @@ public class SearchManual extends PageSearch{
 
     private Integer manualType;
 
+    private Integer versionType;
 
     public String getManualName() {
         return manualName;
@@ -26,5 +27,13 @@ public class SearchManual extends PageSearch{
 
     public void setManualType(Integer manualType) {
         this.manualType = manualType;
+    }
+
+    public Integer getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(Integer versionType) {
+        this.versionType = versionType;
     }
 }

@@ -11,6 +11,8 @@ public class SearchFault extends PageSearch{
 
     private String faultCode;
 
+    private Integer versionType;
+
     public String getFaultName() {
         return faultName;
     }
@@ -25,5 +27,13 @@ public class SearchFault extends PageSearch{
 
     public void setFaultCode(String faultCode) {
         this.faultCode = faultCode;
+    }
+
+    public Integer getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(Integer versionType) {
+        this.versionType = versionType;
     }
 }

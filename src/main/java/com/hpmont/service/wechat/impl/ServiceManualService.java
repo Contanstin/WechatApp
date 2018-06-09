@@ -53,7 +53,12 @@ public class ServiceManualService implements IServiceManualService{
     }
 
     @Override
-    public List<ServiceManual> findManualListByType(SearchManual search) {
-        return manualDao.findManualListByType(search);
+    public List<ServiceManual> findManualListByApp(SearchManual search) {
+        return manualDao.findManualListByApp(search);
+    }
+
+    @Override
+    public List<ServiceManual> findVersionType() {
+        return manualDao.findVersionType();
     }
 }

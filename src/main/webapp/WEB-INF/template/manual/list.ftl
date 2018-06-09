@@ -33,8 +33,12 @@
     <form action="list.jhtml" id="listForm" >
             <div class="path">
                 <div style="float: left" >
+                    <span  class="arrow">软件版本:</span>
+                    <select name="versionType" class="versionType" id="versionType" style="width: 120px" >
+
+                    </select>
                     <span  class="arrow">手册类型:</span>
-                    <select name="manualType" class="manualType" id="manualType" style="width: 100px" >
+                    <select name="manualType" class="manualType" id="manualType" style="width: 120px" >
 
                     </select>
                <span  class="arrow">手册名称:</span>
@@ -53,6 +57,7 @@
             <th>手册类型</th>
             <th>格式</th>
             <th>url</th>
+            <th>软件版本</th>
             <th>是否使用</th>
             <th>操作</th>
         </tr>
@@ -62,6 +67,7 @@
             <td>${obj.name}</td>
             <td>${obj.manualFormat}</td>
             <td>${obj.manualUrl}</td>
+            <td>${obj.versionName}</td>
             <td>
                 [#if obj.status==1 ]启用
                 [#elseif obj.status==2 ]禁用
@@ -99,6 +105,14 @@
                 </td>
             </tr>
             <tr>
+                <td>软件版本:</td>
+                <td colspan="2">
+                    <select name="versionType" class="versionType"  >
+
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td>是否使用:</td>
                 <td colspan="2">
                     <select name="status" id="qstatus">
@@ -109,7 +123,7 @@
             </tr>
             <tr>
                 <td>请选择文件:</td>
-                <td><input type="file" name="file" multiple="multiple" ></td>
+                <td><input type="file" name="file" id="qfile" multiple="multiple" ></td>
             </tr>
             <tr align="center">
                 <td colspan="2"><input type="submit" id="btn"  value="保存">
@@ -129,6 +143,7 @@
 
     $(function(){
         var manualType = '${search.manualType}';
+        var versionType = '${search.versionType}';
         $.ajax({
             url:'findManualType.jhtml',
             type:'GET',
@@ -151,22 +166,45 @@
                 };
             }
         });
+        $.ajax({
+            url:'findVersionType.jhtml',
+            type:'GET',
+            dataType: 'json' ,
+            data:{
+            },
+            success:function(data){
+                $(".versionType").empty()
+                $(".versionType").append("<option  value=''>全部</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var str="";
+                    if (data[i].id==parseInt(versionType)){
+                        str = "<option  value='"+data[i].id+"' selected='selected' > "
+                            +data[i].name+"</option>"
+                    }else {
+                        str = "<option  value='"+data[i].id+"'> "
+                                +data[i].name+"</option>"
+                    }
+                    $(".versionType").append(str)
+                };
+            }
+        });
 
         var manualName = '${search.manualName}';
         if(manualName){
             $('#manualName').val(manualName);
         }
-
-
         if(manualType){
             $('#manualType').val(manualType);
+        }
+        if(versionType){
+            $('#versionType').val(versionType);
         }
 
     });
 
     //异步提交
     $('#dataForm').submit(function() {
-        if(!$('#qmanualName').val()){
+        if(!$('#qmanualName').val()&&!$('#qfile').val()){
             alert("必填项不能为空");
             return false;
         }
@@ -225,12 +263,6 @@
                 .not(':button, :submit, :reset')
                 .val('');
     }
-
-
-
-
-
-
 
 </script>
 </html>
