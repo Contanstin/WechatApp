@@ -70,18 +70,6 @@ public class ServiceManualController extends BaseController{
         return list;
     }
 
-    @RequestMapping(value = "/findManualListByApp")
-    @ResponseBody
-    public List<ServiceManual> findManualListByApp(@RequestBody SearchManual search){
-        List<ServiceManual> list=null;
-        try {
-            list= manualService.findManualListByApp(search);
-        } catch (Exception e) {
-            logger.error("查询手册种类失败",e);
-        }
-        return list;
-    }
-
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
     public String edit(@RequestParam MultipartFile[] file, ServiceManual manual){

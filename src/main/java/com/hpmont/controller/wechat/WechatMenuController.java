@@ -3,15 +3,13 @@ package com.hpmont.controller.wechat;
 import com.github.pagehelper.PageInfo;
 import com.hpmont.controller.BaseController;
 import com.hpmont.domain.page.PageSearch;
+import com.hpmont.domain.search.SearchMenu;
 import com.hpmont.domain.wechat.WechatMenu;
 import com.hpmont.service.wechat.IWechatMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,13 +24,15 @@ public class WechatMenuController extends BaseController{
     private IWechatMenuService wechatMenuService;
 
     @RequestMapping(value = "/list")
-    public String findAll(Model model, PageSearch search){
+    public String findAll(Model model, SearchMenu search){
         try {
-            PageInfo<WechatMenu> list = wechatMenuService.findWechatMenu(search);
+            if (null==search.getVersionType())
+                search.setVersionType(1);
+            List<WechatMenu> list = wechatMenuService.findWechatMenu(search);
             model.addAttribute("page",list);
             model.addAttribute("search",search);
         } catch (Exception e) {
-            logger.error("查询轮播图列表出错", e);
+            logger.error("查询后台微信菜单出错", e);
         }
         return "/wechat_menu/list";
     }
@@ -65,17 +65,5 @@ public class WechatMenuController extends BaseController{
             return errorResult("删除微信失败");
         }
         return success();
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/findMenuByApp")
-    public List<WechatMenu> findMenuByApp(){
-        List<WechatMenu> list=null;
-        try {
-            list = wechatMenuService.findMenuByApp();
-        } catch (Exception e) {
-            logger.error("微信查询菜单列表出错", e);
-        }
-        return list;
     }
 }

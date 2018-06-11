@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import com.hpmont.constants.Constant;
 import com.hpmont.dao.mapper.wechat.WechatMenuMapper;
 import com.hpmont.domain.page.PageSearch;
+import com.hpmont.domain.search.SearchMenu;
 import com.hpmont.domain.wechat.Slideshow;
 import com.hpmont.domain.wechat.WechatMenu;
 import com.hpmont.service.wechat.IWechatMenuService;
@@ -24,12 +25,8 @@ public class WechatMenuService implements IWechatMenuService{
     private WechatMenuMapper wechatMenuDao;
 
     @Override
-    public PageInfo<WechatMenu> findWechatMenu(PageSearch search) {
-        PageHelper.startPage(search.getCurrpage(), Constant.PAGEROWS);
-        Page<WechatMenu> list = wechatMenuDao.findWechatMenu(search);
-        PageInfo<WechatMenu> pageInfo=new PageInfo<>(list);
-        pageInfo.setList(list);
-        return pageInfo;
+    public List<WechatMenu> findWechatMenu(SearchMenu search) {
+        return wechatMenuDao.findWechatMenu(search);
     }
 
     @Override
@@ -48,7 +45,7 @@ public class WechatMenuService implements IWechatMenuService{
     }
 
     @Override
-    public List<WechatMenu> findMenuByApp() {
-        return wechatMenuDao.findMenuByApp();
+    public List<WechatMenu> findMenuByApp(SearchMenu search) {
+        return wechatMenuDao.findMenuByApp(search);
     }
 }

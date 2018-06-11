@@ -13,8 +13,7 @@
             <value>
                 /slideshow/** = anon
                 /manual/** = anon
-                /wechat_menu/** = anon
-                /fault/** = anon
+                /wechat/** = anon
                 /index.jhtml = user
                 /logout.jhtml = logout
                 /resource/** = anon

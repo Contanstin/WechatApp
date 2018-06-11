@@ -26,18 +26,6 @@ public class FaultDescriptionController extends BaseController{
     @Autowired
     private IFaultDescriptionService faultService;
 
-    @RequestMapping(value = "/findFaultListByApp")
-    @ResponseBody
-    public List<FaultDescription> findFaultListByApp(@RequestBody SearchFault search){
-        List<FaultDescription> list=null;
-        try {
-            list= faultService.findFaultListByApp(search);
-        } catch (Exception e) {
-            logger.error("微信查询故障说明失败",e);
-        }
-        return list;
-    }
-
     @RequestMapping(value = "/list")
     public String findAll(Model model, SearchFault search){
         try {

@@ -148,17 +148,6 @@ public class SlideshowController extends BaseController{
         }
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/findSlideshowUrl")
-    public  List<String> findSlideshowUrlByApp(){
-        List<String> list=null;
-        try {
-           list = slideshowService.findSlideshowUrlByApp();
-        } catch (Exception e) {
-            logger.error("微信查询轮播图url列表出错", e);
-        }
-        return list;
-    }
 
 
 }

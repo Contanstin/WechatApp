@@ -1,9 +1,14 @@
 package com.hpmont.domain.wechat;
 
 import java.util.Date;
+import java.util.List;
 
 public class WechatMenu {
     private Integer id;
+
+    private Integer parentId;
+
+    private Integer menuType;
 
     private String menuName;
 
@@ -13,7 +18,17 @@ public class WechatMenu {
 
     private Integer orderNum;
 
-    private Integer status;
+    private Integer manualType;
+
+    private Integer versionType;
+
+    private String manualName;
+
+    private String versionName;
+
+    private List<WechatMenu> children;
+
+    private Byte status;
 
     private Date gmtCreate;
 
@@ -25,6 +40,22 @@ public class WechatMenu {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public Integer getMenuType() {
+        return menuType;
+    }
+
+    public void setMenuType(Integer menuType) {
+        this.menuType = menuType;
     }
 
     public String getMenuName() {
@@ -59,11 +90,27 @@ public class WechatMenu {
         this.orderNum = orderNum;
     }
 
-    public Integer getStatus() {
+    public Integer getManualType() {
+        return manualType;
+    }
+
+    public void setManualType(Integer manualType) {
+        this.manualType = manualType;
+    }
+
+    public Integer getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(Integer versionType) {
+        this.versionType = versionType;
+    }
+
+    public Byte getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Byte status) {
         this.status = status;
     }
 
@@ -81,5 +128,29 @@ public class WechatMenu {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public List<WechatMenu> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<WechatMenu> children) {
+        this.children = children;
+    }
+
+    public String getManualName() {
+        return manualName;
+    }
+
+    public void setManualName(String manualName) {
+        this.manualName = manualName;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 }

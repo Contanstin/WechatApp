@@ -1,69 +1,122 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hpmont.dao.mapper.wechat.WechatMenuMapper" >
-  <resultMap id="BaseResultMap" type="com.hpmont.domain.wechat.WechatMenu" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
-    <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
-    <result column="description" property="description" jdbcType="VARCHAR" />
-    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="BIT" />
-    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
-    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  <resultMap id="BaseResultMap" type="com.hpmont.domain.wechat.WechatMenu">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="menu_type" jdbcType="INTEGER" property="menuType" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
+    <result column="menu_url" jdbcType="VARCHAR" property="menuUrl" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="order_num" jdbcType="INTEGER" property="orderNum" />
+    <result column="manual_type" jdbcType="INTEGER" property="manualType" />
+    <result column="version_type" jdbcType="INTEGER" property="versionType" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, menu_name, menu_url, description, order_num, status, gmt_create, gmt_modified
+  <resultMap id="MenuResultMap" type="com.hpmont.domain.wechat.WechatMenu" extends="BaseResultMap">
+    <collection property="children" ofType="WechatMenu" column="{parentId=id,versionType=version_type}" select="findMenuByParentId"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, parent_id, menu_type, menu_name, menu_url, description, order_num, manual_type,
+    version_type, status, gmt_create, gmt_modified
   </sql>
-  <select id="findWechatMenu" resultMap="BaseResultMap" >
-    select 
-    <include refid="Base_Column_List" />
-    from wechat_menu
-    ORDER  BY  order_num
+  <select id="findWechatMenu" resultMap="MenuResultMap" parameterType="com.hpmont.domain.search.SearchMenu" >
+    select
+    wm.id, wm.parent_id, wm.menu_type, wm.menu_name, wm.menu_url, wm.description, wm.order_num, wm.manual_type,
+    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName
+    from wechat_menu wm
+    LEFT JOIN dict_manual dm ON wm.manual_type=dm.id
+    LEFT JOIN dict_version dv ON wm.version_type=dv.id
+    WHERE wm.menu_type=1
+    AND wm.parent_id=0
+    <if test="versionType!=null and versionType!=0">
+      AND wm.version_type =#{versionType,jdbcType=INTEGER}
+    </if>
+    ORDER  BY  wm.order_num
   </select>
 
-  <select id="findMenuByApp" resultMap="BaseResultMap" >
+  <select id="findMenuByParentId" resultMap="MenuResultMap" >
     select
-    <include refid="Base_Column_List" />
-    from wechat_menu
-    WHERE status=1
-    ORDER  BY  order_num
+    wm.id, wm.parent_id, wm.menu_type, wm.menu_name, wm.menu_url, wm.description, wm.order_num, wm.manual_type,
+    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName
+    from wechat_menu wm
+    LEFT JOIN dict_manual dm ON wm.manual_type=dm.id
+    LEFT JOIN dict_version dv ON wm.version_type=dv.id
+    WHERE wm.version_type=#{versionType}
+    AND wm.parent_id=#{parentId}
+    ORDER  BY  wm.order_num
+  </select>
+
+  <select id="findMenuByApp" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchMenu" >
+    select
+    wm.id, wm.parent_id, wm.menu_type, wm.menu_name, wm.menu_url, wm.description, wm.order_num, wm.manual_type,
+    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName
+    from wechat_menu wm
+    LEFT JOIN dict_manual dm ON wm.manual_type=dm.id
+    LEFT JOIN dict_version dv ON wm.version_type=dv.id
+    WHERE wm.parent_id=#{parentId,jdbcType=INTEGER}
+    <if test="menuType!=null and menuType!='' ">
+    AND wm.menu_type=#{menuType,jdbcType=INTEGER}
+     </if>
+      AND wm.version_type =#{versionType,jdbcType=INTEGER}
+    AND  wm.status=1
+    ORDER  BY  wm.order_num
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from wechat_menu
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.hpmont.domain.wechat.WechatMenu" >
-    insert into wechat_menu (id, menu_name, menu_url, 
-      description, order_num, status, 
-      gmt_create, gmt_modified)
-    values (#{id,jdbcType=INTEGER}, #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, 
-      #{description,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}, #{status,jdbcType=BIT}, 
-      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+  <insert id="insert" parameterType="com.hpmont.domain.wechat.WechatMenu">
+    insert into wechat_menu (id, parent_id, menu_type,
+      menu_name, menu_url, description,
+      order_num, manual_type, version_type,
+      status, gmt_create, gmt_modified
+      )
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{menuType,jdbcType=INTEGER},
+      #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+      #{orderNum,jdbcType=INTEGER}, #{manualType,jdbcType=INTEGER}, #{versionType,jdbcType=INTEGER},
+      #{status,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.wechat.WechatMenu" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.wechat.WechatMenu">
     update wechat_menu
-    <set >
-      <if test="menuName != null" >
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="menuType != null">
+        menu_type = #{menuType,jdbcType=INTEGER},
+      </if>
+      <if test="menuName != null">
         menu_name = #{menuName,jdbcType=VARCHAR},
       </if>
-      <if test="menuUrl != null" >
+      <if test="menuUrl != null">
         menu_url = #{menuUrl,jdbcType=VARCHAR},
       </if>
-      <if test="description != null" >
+      <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="orderNum != null" >
+      <if test="orderNum != null">
         order_num = #{orderNum,jdbcType=INTEGER},
       </if>
-      <if test="status != null" >
+      <if test="manualType != null">
+        manual_type = #{manualType,jdbcType=INTEGER},
+      </if>
+      <if test="versionType != null">
+        version_type = #{versionType,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
         status = #{status,jdbcType=BIT},
       </if>
-      <if test="gmtCreate != null" >
+      <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       </if>
-      <if test="gmtModified != null" >
+      <if test="gmtModified != null">
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </set>
