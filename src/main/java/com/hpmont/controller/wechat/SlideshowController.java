@@ -52,24 +52,36 @@ public class SlideshowController extends BaseController{
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public String edit(MultipartFile file, Slideshow slideshow){
+    public String edit(@RequestParam MultipartFile [] file, Slideshow slideshow){
         String realName="";
         try {
-            if (file.getSize() > 0) {
-                String filename = file.getOriginalFilename();
-                File f = new File(baseUrl, filename);
-                if (!f.getParentFile().exists()) {
-                    f.getParentFile().mkdirs();
-                }
-                realName= new Date().getTime()+filename;
-                file.transferTo(new File(baseUrl + realName));
-                slideshow.setImageUrl(projectPath+"slideshow/showPic?realName="+realName);
-                slideshow.setRealName(realName);
+            if (null!=file&&file.length>0){
+                for (MultipartFile multipartFile : file) {
+                    if (multipartFile.getSize() > 0) {
+                        if (null!=slideshow.getRealName()){
+                            File df = new File(baseUrl+slideshow.getRealName());
+                            if (df.exists() && df.isFile()) {
+                                df.delete();
+                            }
+                        }
+                        String filename = multipartFile.getOriginalFilename();
+                        File f = new File(baseUrl, filename);
+                        if (!f.getParentFile().exists()) {
+                            f.getParentFile().mkdirs();
+                        }
+                        if (slideshow.getImageName()==null)
+                        slideshow.setImageName(filename.substring(0, filename.lastIndexOf(".")));
+                        realName = new Date().getTime() + "." + filename.substring(filename.lastIndexOf(".") + 1);
+                        multipartFile.transferTo(new File(baseUrl + realName));
+                        slideshow.setImageUrl(projectPath + "slideshow/download?realName=" + realName);
+                        slideshow.setRealName(realName);
+                    }
             }
             if (null==slideshow.getId()){
                 slideshowService.insert(slideshow);
             }else {
                 slideshowService.update(slideshow);
+            }
             }
         } catch (Exception e) {
             logger.error("编辑轮播图失败",e);
@@ -136,15 +148,20 @@ public class SlideshowController extends BaseController{
      * @param imgFile
      */
     private void responseFile(HttpServletResponse response, File imgFile) {
-        try(InputStream is = new FileInputStream(imgFile);
-            OutputStream os = response.getOutputStream();){
+
+        try(
+                InputStream is = new FileInputStream(imgFile);
+            OutputStream os = response.getOutputStream();
+            ){
             byte [] buffer = new byte[1024]; // 图片文件流缓存池
             while(is.read(buffer) != -1){
                 os.write(buffer);
             }
             os.flush();
-        } catch (IOException ioe){
-            ioe.printStackTrace();
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+
         }
     }
 

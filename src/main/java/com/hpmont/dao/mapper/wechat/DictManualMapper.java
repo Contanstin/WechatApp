@@ -11,5 +11,5 @@ public interface DictManualMapper {
 
     int updateByPrimaryKeySelective(DictManual record);
 
-    Page<DictManual> findManualType(PageSearch search);
+    Page<DictManual> findManualType();
 }

@@ -72,7 +72,7 @@
                 [#if obj.status==1 ]启用
                 [#elseif obj.status==2 ]禁用
                 [/#if]</td>
-            <td>   <button onclick="modify('${obj.id}','${obj.manualName}','${obj.manualType}', '${obj.status}');
+            <td>   <button onclick="modify('${obj.id}','${obj.realName}','${obj.manualName}','${obj.manualType}', '${obj.status}');
                   return false;">修改</button>
                 <button onclick="deleteObj('${obj.id}','${obj.realName}');return false;">删除</button>
             </td>
@@ -88,6 +88,7 @@
 <div class="dataDiv" id="dataDiv">
     <form id="dataForm" action="edit.jhtml" method="POST" enctype="multipart/form-data">
         <input name="id" id="id" value="" type="hidden">
+        <input name="realName" id="realName" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
                 <td colspan="2">手册基本信息</td>
@@ -227,8 +228,9 @@
         $('#dataDiv').show(time);
     }
 
-    var modify = function(id,manualName, manualType, status){
+    var modify = function(id,realName,manualName, manualType, status){
         $('#id').val(id);
+        $('#realName').val(realName);
         $('#qmanualName').val(manualName);
         $('#qmanualType').val(manualType);
         if(status==1){

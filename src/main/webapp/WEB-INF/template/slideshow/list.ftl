@@ -77,7 +77,7 @@
             <td>
                 <button  onclick="showPic('${obj.realName}');return false;">预览</button>
                 <button  onclick="download('${obj.realName}');return false;">下载</button>
-                <button onclick="modify('${obj.id}','${obj.imageName}','${obj.orderNum}','${obj.status}');
+                <button onclick="modify('${obj.id}','${obj.realName}','${obj.imageName}','${obj.orderNum}','${obj.status}');
                   return false;">修改</button>
                 <button onclick="deleteObj('${obj.id}','${obj.realName}');return false;">删除</button>
             </td>
@@ -93,17 +93,18 @@
 <div class="dataDiv" id="dataDiv">
     <form id="dataForm" action="upload.jhtml" method="POST" enctype="multipart/form-data" >
         <input name="id" id="id" value="" type="hidden">
+        <input name="realName" id="realName" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
                 <td colspan="2">轮播图基本信息</td>
             </tr>
             <tr>
-                <td><span class="requiredField">*</span>图片名称:</td>
+                <td><span></span>图片名称:</td>
                 <td><input type="text"  name="imageName" id="qimageName" value=""></td>
             </tr>
             <tr>
                 <td><span class="requiredField">*</span>图片排序:</td>
-                <td><input type="text"  name="orderNum" id="qorderNum" value="" maxlength="2"></td>
+                <td><input type="text"  name="orderNum" id="qorderNum" value="" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"></td>
             </tr>
             <tr>
                 <td><span class="requiredField">*</span>是否启用:</td>
@@ -116,7 +117,7 @@
             </tr>
             <tr>
                 <td>请选择文件:</td>
-                <td><input type="file" name="file"></td>
+                <td><input type="file" name="file" multiple="multiple" ></td>
             </tr>
             <tr align="center">
                 <td colspan="2"><input type="submit" id="btn"  value="保存">
@@ -152,7 +153,7 @@
 
     //异步提交
     $('#dataForm').submit(function() {
-        if(!$('#qimageName').val()&&!$('#qorderNum').val()){
+        if(!$('#qorderNum').val()){
             alert("输入项不能为空");
             return false;
         }
@@ -185,8 +186,9 @@
         $('#back').show();
         $('#dataDiv').show(time);
     }
-    var modify = function(id,imageName, orderNum,status){
+    var modify = function(id,realName,imageName, orderNum,status){
         $('#id').val(id);
+        $('#realName').val(realName);
         if(status==1){
             $('#qstatus').val(1);
         } else if (status==2){

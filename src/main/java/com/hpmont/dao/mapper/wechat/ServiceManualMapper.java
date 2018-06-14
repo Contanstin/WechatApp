@@ -2,6 +2,8 @@ package com.hpmont.dao.mapper.wechat;
 
 import com.github.pagehelper.Page;
 import com.hpmont.domain.search.SearchManual;
+import com.hpmont.domain.wechat.DictManual;
+import com.hpmont.domain.wechat.DictVersion;
 import com.hpmont.domain.wechat.ServiceManual;
 
 import java.util.List;
@@ -15,9 +17,5 @@ public interface ServiceManualMapper {
 
     Page<ServiceManual> findManualList(SearchManual search);
 
-    List<ServiceManual> findManualType();
-
     List<ServiceManual> findManualListByApp(SearchManual search);
-
-    List<ServiceManual> findVersionType();
 }

@@ -28,7 +28,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 			"currentPassword" };
 	/** 默认忽略地址 */
 	private static final String[] DEFAULT_IGNORE_URL = new String[] { "/common/main.jhtml", "/common/captcha.jhtml",
-			"/login.jhtml" };
+			"/login.jhtml","/slideshow/showPic","/slideshow/showPic","/slideshow/download","/manual/download" };
 	/** antPathMatcher */
 	private static AntPathMatcher antPathMatcher = new AntPathMatcher();
 	/** 忽略参数 */
@@ -66,6 +66,8 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 				}
 			}
 		}
+		if (operation!=null&&operation.contains("list"))
+			return;
 		AdminLog log = new AdminLog();
 		log.setCreateTime(new Date());
 		log.setOperation(operation);

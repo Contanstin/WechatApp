@@ -24,7 +24,7 @@ public class DictVersionService implements IDictVersionService{
     @Override
     public PageInfo<DictVersion> pageVersionType(PageSearch search) {
         PageHelper.startPage(search.getCurrpage(), Constant.PAGEROWS);
-        Page<DictVersion> list = dictVersionDao.findVersionType(search);
+        Page<DictVersion> list = dictVersionDao.findVersionType();
         PageInfo<DictVersion> pageInfo=new PageInfo<>(list);
         pageInfo.setList(list);
         return pageInfo;

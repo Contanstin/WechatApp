@@ -26,7 +26,7 @@ public class DictManualService implements IDictManualService{
     @Override
     public PageInfo<DictManual> pageManualType(PageSearch search) {
         PageHelper.startPage(search.getCurrpage(), Constant.PAGEROWS);
-        Page<DictManual> list = dictManualDao.findManualType(search);
+        Page<DictManual> list = dictManualDao.findManualType();
         PageInfo<DictManual> pageInfo=new PageInfo<>(list);
         pageInfo.setList(list);
         return pageInfo;

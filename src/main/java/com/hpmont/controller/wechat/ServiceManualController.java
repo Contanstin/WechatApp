@@ -3,6 +3,8 @@ package com.hpmont.controller.wechat;
 import com.github.pagehelper.PageInfo;
 import com.hpmont.controller.BaseController;
 import com.hpmont.domain.search.SearchManual;
+import com.hpmont.domain.wechat.DictManual;
+import com.hpmont.domain.wechat.DictVersion;
 import com.hpmont.domain.wechat.ServiceManual;
 import com.hpmont.service.wechat.IServiceManualService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +50,8 @@ public class ServiceManualController extends BaseController{
 
     @RequestMapping(value = "/findManualType")
     @ResponseBody
-    public List<ServiceManual> findManualType(){
-        List<ServiceManual> list=null;
+    public List<DictManual> findManualType(){
+        List<DictManual> list=null;
         try {
             list= manualService.findManualType();
         } catch (Exception e) {
@@ -60,8 +62,8 @@ public class ServiceManualController extends BaseController{
 
     @RequestMapping(value = "/findVersionType")
     @ResponseBody
-    public List<ServiceManual> findVersionType(){
-        List<ServiceManual> list=null;
+    public List<DictVersion> findVersionType(){
+        List<DictVersion> list=null;
         try {
             list= manualService.findVersionType();
         } catch (Exception e) {
@@ -75,14 +77,21 @@ public class ServiceManualController extends BaseController{
     public String edit(@RequestParam MultipartFile[] file, ServiceManual manual){
         String realName="";
         try {
-            if (null!=file){
+            if (null!=file&&file.length>0){
                 for (MultipartFile multipartFile : file) {
                     if (multipartFile.getSize() > 0) {
+                        if (null!=manual.getRealName()){
+                            File df = new File(baseUrl+manual.getRealName());
+                            if (df.exists() && df.isFile()) {
+                                df.delete();
+                            }
+                        }
                         String filename = multipartFile.getOriginalFilename();
                         File f = new File(baseUrl, filename);
                         if (!f.getParentFile().exists()) {
                             f.getParentFile().mkdirs();
                         }
+                        if (manual.getManualName()==null)
                         manual.setManualName(filename.substring(0, filename.lastIndexOf(".")));
                         manual.setManualFormat(filename.substring(filename.lastIndexOf(".") + 1));
                         realName= new Date().getTime()+"."+manual.getManualFormat();

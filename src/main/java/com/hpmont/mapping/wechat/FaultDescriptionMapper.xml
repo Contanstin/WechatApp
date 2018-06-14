@@ -21,10 +21,10 @@
     from fault_description
     where status =1
     <if test="faultName!=null and faultName!=''">
-      AND fault_name LIKE CONCAT('%',#{faultName,jdbcType=VARCHAR}, '%')
-    </if>
-    <if test="faultCode!=null and faultCode!=''">
-      AND fault_code LIKE CONCAT('%',#{faultCode,jdbcType=VARCHAR}, '%')
+      AND (fault_name LIKE CONCAT('%',#{faultName,jdbcType=VARCHAR}, '%')
+      OR
+      fault_code LIKE CONCAT('%',#{faultName,jdbcType=VARCHAR}, '%')
+      )
     </if>
     <if test="versionType!=null and versionType!=0">
       AND version_type =#{versionType,jdbcType=INTEGER}

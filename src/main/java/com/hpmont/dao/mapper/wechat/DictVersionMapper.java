@@ -11,5 +11,6 @@ public interface DictVersionMapper {
 
     int updateByPrimaryKeySelective(DictVersion record);
 
-    Page<DictVersion> findVersionType(PageSearch search);
+    Page<DictVersion> findVersionType();
+
 }

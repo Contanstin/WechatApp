@@ -4,6 +4,7 @@ import com.hpmont.controller.BaseController;
 import com.hpmont.domain.search.SearchFault;
 import com.hpmont.domain.search.SearchManual;
 import com.hpmont.domain.search.SearchMenu;
+import com.hpmont.domain.wechat.DictVersion;
 import com.hpmont.domain.wechat.FaultDescription;
 import com.hpmont.domain.wechat.ServiceManual;
 import com.hpmont.domain.wechat.WechatMenu;
@@ -50,20 +51,6 @@ public class WechatDataController extends BaseController {
         return list;
     }
 
-
-    @RequestMapping(value = "/findManualListByApp")
-    @ResponseBody
-    public List<ServiceManual> findManualListByApp(@RequestBody SearchManual search){
-        List<ServiceManual> list=null;
-        try {
-            list= manualService.findManualListByApp(search);
-        } catch (Exception e) {
-            logger.error("查询手册种类失败",e);
-        }
-        return list;
-    }
-
-
     @ResponseBody
     @RequestMapping(value = "/findMenuByApp")
     public List<WechatMenu> findMenuByApp(@RequestBody SearchMenu search){
@@ -91,12 +78,26 @@ public class WechatDataController extends BaseController {
 
     @RequestMapping(value = "/findVersionTypeByApp")
     @ResponseBody
-    public List<ServiceManual> findVersionType(){
-        List<ServiceManual> list=null;
+    public List<DictVersion> findVersionType(){
+        List<DictVersion> list=null;
         try {
             list= manualService.findVersionType();
         } catch (Exception e) {
             logger.error("查询软件版本失败",e);
+        }
+        return list;
+    }
+
+
+
+    @RequestMapping(value = "/findManualListByApp")
+    @ResponseBody
+    public List<ServiceManual> findManualListByApp(@RequestBody SearchManual search){
+        List<ServiceManual> list=null;
+        try {
+            list= manualService.findManualListByApp(search);
+        } catch (Exception e) {
+            logger.error("查询手册种类失败",e);
         }
         return list;
     }

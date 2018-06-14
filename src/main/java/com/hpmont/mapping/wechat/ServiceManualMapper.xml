@@ -36,14 +36,6 @@
     </if>
   </select>
 
-  <select id="findManualType" resultMap="BaseResultMap">
-   SELECT * FROM dict_manual
-  </select>
-
-  <select id="findVersionType" resultMap="BaseResultMap">
-   SELECT * FROM dict_version
-  </select>
-
   <select id="findManualListByApp" resultMap="BaseResultMap"  parameterType="com.hpmont.domain.search.SearchManual">
     select
     id, manual_name,manual_url

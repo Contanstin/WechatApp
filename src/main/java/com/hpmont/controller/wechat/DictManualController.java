@@ -33,7 +33,7 @@ public class DictManualController extends BaseController{
         } catch (Exception e) {
             logger.error("查询手册类型失败", e);
         }
-        return "/version_type/list";
+        return "/manual_type/list";
     }
 
 
