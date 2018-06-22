@@ -26,6 +26,12 @@ public class FaultDescriptionService implements IFaultDescriptionService{
 
     @Override
     public List<FaultDescription> findFaultListByApp(SearchFault search) {
+        if (search.getFaultName()!=null){
+            if (search.getFaultName().length()>2){
+                search.setFaultCode(search.getFaultName());
+                search.setFaultName("");
+            }
+        }
         return faultDao.findFaultListByApp(search);
     }
 
