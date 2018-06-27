@@ -2,24 +2,28 @@ package com.hpmont.domain.wechat;
 
 import java.util.Date;
 
-public class ServiceManual {
+public class WechatManual {
     private Integer id;
 
     private String manualName;
 
     private String realName;
 
-    private String name;
+    private Integer manualType;
 
-    private Byte manualType;
+    private String name;
 
     private String manualFormat;
 
     private String manualUrl;
 
+    private Integer versionType;
+
     private String versionName;
 
-    private Integer versionType;
+    private Integer languageType;
+
+    private Integer departmentType;
 
     private Integer status;
 
@@ -40,7 +44,7 @@ public class ServiceManual {
     }
 
     public void setManualName(String manualName) {
-        this.manualName = manualName == null ? null : manualName.trim();
+        this.manualName = manualName;
     }
 
     public String getRealName() {
@@ -48,14 +52,14 @@ public class ServiceManual {
     }
 
     public void setRealName(String realName) {
-        this.realName = realName == null ? null : realName.trim();
+        this.realName = realName;
     }
 
-    public Byte getManualType() {
+    public Integer getManualType() {
         return manualType;
     }
 
-    public void setManualType(Byte manualType) {
+    public void setManualType(Integer manualType) {
         this.manualType = manualType;
     }
 
@@ -64,7 +68,7 @@ public class ServiceManual {
     }
 
     public void setManualFormat(String manualFormat) {
-        this.manualFormat = manualFormat == null ? null : manualFormat.trim();
+        this.manualFormat = manualFormat;
     }
 
     public String getManualUrl() {
@@ -72,7 +76,31 @@ public class ServiceManual {
     }
 
     public void setManualUrl(String manualUrl) {
-        this.manualUrl = manualUrl == null ? null : manualUrl.trim();
+        this.manualUrl = manualUrl;
+    }
+
+    public Integer getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(Integer versionType) {
+        this.versionType = versionType;
+    }
+
+    public Integer getLanguageType() {
+        return languageType;
+    }
+
+    public void setLanguageType(Integer languageType) {
+        this.languageType = languageType;
+    }
+
+    public Integer getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Integer departmentType) {
+        this.departmentType = departmentType;
     }
 
     public Integer getStatus() {
@@ -99,12 +127,12 @@ public class ServiceManual {
         this.gmtModified = gmtModified;
     }
 
-    public Integer getVersionType() {
-        return versionType;
+    public String getVersionName() {
+        return versionName;
     }
 
-    public void setVersionType(Integer versionType) {
-        this.versionType = versionType;
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
     }
 
     public String getName() {
@@ -113,13 +141,5 @@ public class ServiceManual {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public void setVersionName(String versionName) {
-        this.versionName = versionName;
     }
 }

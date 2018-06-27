@@ -63,8 +63,9 @@
 </form>
 
 <div class="dataDiv" id="dataDiv">
-    <form id="dataForm" action="upload.jhtml" method="POST" enctype="multipart/form-data" >
+    <form id="dataForm" action="edit.jhtml" method="POST" >
         <input name="id" id="id" value="" type="hidden">
+        <input name="departmentType" class="departmentType" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
                 <td colspan="2">手册类型基本信息</td>
@@ -97,8 +98,10 @@
     var time = 200;
 
     $(function(){
-
-
+        var departmentType = '${search.departmentType}';
+        if(departmentType){
+            $('.departmentType').val(departmentType);
+        }
     });
 
     //异步提交

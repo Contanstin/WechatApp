@@ -4,7 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.hpmont.controller.BaseController;
 import com.hpmont.domain.page.PageSearch;
 import com.hpmont.domain.search.SearchMenu;
+import com.hpmont.domain.wechat.DictVersion;
 import com.hpmont.domain.wechat.WechatMenu;
+import com.hpmont.service.wechat.IDictVersionService;
 import com.hpmont.service.wechat.IWechatMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,11 +25,20 @@ public class WechatMenuController extends BaseController{
     @Autowired
     private IWechatMenuService wechatMenuService;
 
+    @Autowired
+    private IDictVersionService dictVersionService;
+
     @RequestMapping(value = "/list")
     public String findAll(Model model, SearchMenu search){
         try {
-            if (null==search.getVersionType())
-                search.setVersionType(1);
+            if (null==search.getVersionType()){
+                if (null!=search.getDepartmentType()){
+                    List<DictVersion>  versionList= dictVersionService.findVersionType(search);
+                    if (null!=versionList&&versionList.size()>0){
+                        search.setVersionType(versionList.get(0).getId());
+                    }
+                }
+            }
             List<WechatMenu> list = wechatMenuService.findWechatMenu(search);
             model.addAttribute("page",list);
             model.addAttribute("search",search);

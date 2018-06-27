@@ -37,7 +37,7 @@
                 [#--<div style="float: left" >--]
                     [#--<span  class="arrow">软件名称:</span>--]
                     [#--<select name="versionType" id="versionType" >--]
-                        [#--<option  value="" >全部</option>--]
+                        [#--<option  value="" >请选择</option>--]
                         [#--<option  value="1" >Mont70</option>--]
                         [#--<option  value="2" >Mont71</option>--]
                         [#--<option  value="3" >HD5L</option>--]
@@ -57,6 +57,7 @@
             <th>图片名称</th>
             <th>储存名称</th>
             <th>排序</th>
+            <th>是否轮播</th>
             <th>是否启用</th>
             <th>创建时间</th>
             <th>修改时间</th>
@@ -68,6 +69,11 @@
             <td>${obj.imageUrl}</td>
             <td>${obj.orderNum}</td>
             <td>
+                [#if obj.isEnable==1 ]启用
+                [#elseif obj.isEnable==2 ]禁用
+                [/#if]
+            </td>
+            <td>
                 [#if obj.status==1 ]启用
                 [#elseif obj.status==2 ]禁用
                 [/#if]
@@ -77,7 +83,7 @@
             <td>
                 <button  onclick="showPic('${obj.realName}');return false;">预览</button>
                 <button  onclick="download('${obj.realName}');return false;">下载</button>
-                <button onclick="modify('${obj.id}','${obj.realName}','${obj.imageName}','${obj.orderNum}','${obj.status}');
+                <button onclick="modify('${obj.id}','${obj.realName}','${obj.imageName}','${obj.orderNum}','${obj.isEnable}','${obj.status}');
                   return false;">修改</button>
                 <button onclick="deleteObj('${obj.id}','${obj.realName}');return false;">删除</button>
             </td>
@@ -94,6 +100,7 @@
     <form id="dataForm" action="upload.jhtml" method="POST" enctype="multipart/form-data" >
         <input name="id" id="id" value="" type="hidden">
         <input name="realName" id="realName" value="" type="hidden">
+        <input name="departmentType" class="departmentType" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
                 <td colspan="2">轮播图基本信息</td>
@@ -107,6 +114,16 @@
                 <td><input type="text"  name="orderNum" id="qorderNum" value="" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"></td>
             </tr>
             <tr>
+                <td><span class="requiredField">*</span>是否轮播:</td>
+                <td colspan="2">
+                    <select name="isEnable" id="qisEnable">
+                        <option  value="2" >禁用</option>
+                        <option  value="1" >启用</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
                 <td><span class="requiredField">*</span>是否启用:</td>
                 <td colspan="2">
                     <select name="status" id="qstatus">
@@ -115,6 +132,7 @@
                     </select>
                 </td>
             </tr>
+
             <tr>
                 <td>请选择文件:</td>
                 <td><input type="file" name="file" multiple="multiple" ></td>
@@ -135,21 +153,13 @@
 <script type="text/javascript">
     var time = 200;
 
-    [#--$(function(){--]
-        [#--var versionType = '${search.versionType}';--]
-        [#--if(versionType==1){--]
-            [#--$('#versionType').val(1);--]
-        [#--} else if (versionType==2){--]
-            [#--$('#versionType').val(2);--]
-        [#--}else if(versionType==3){--]
-            [#--$('#versionType').val(3);--]
-        [#--}--]
-        [#--var authCode = '${search.authCode}';--]
-        [#--if(authCode){--]
-            [#--$('#authCode').val(authCode);--]
-        [#--}--]
+    $(function(){
+        var departmentType = '${search.departmentType}';
+        if(departmentType){
+            $('.departmentType').val(departmentType);
+        }
 
-    [#--});--]
+    });
 
     //异步提交
     $('#dataForm').submit(function() {
@@ -186,14 +196,11 @@
         $('#back').show();
         $('#dataDiv').show(time);
     }
-    var modify = function(id,realName,imageName, orderNum,status){
+    var modify = function(id,realName,imageName, orderNum,isEnable,status){
         $('#id').val(id);
         $('#realName').val(realName);
-        if(status==1){
-            $('#qstatus').val(1);
-        } else if (status==2){
-            $('#qstatus').val(2);
-        }
+        $('#qstatus').val(status);
+        $('#qisEnable').val(isEnable);
         $('#qimageName').val(imageName);
         $('#qorderNum').val(orderNum);
         $('#back').show();

@@ -43,6 +43,7 @@
                     </select>
                <span  class="arrow">手册名称:</span>
                  <input type="text" name="manualName" id="manualName"  />
+                    <input name="departmentType" class="departmentType" value="" type="hidden">
                 </div>
                 <button type="button" onclick=" $.firstPageSkip();">查询</button>
          </div>
@@ -89,6 +90,7 @@
     <form id="dataForm" action="edit.jhtml" method="POST" enctype="multipart/form-data">
         <input name="id" id="id" value="" type="hidden">
         <input name="realName" id="realName" value="" type="hidden">
+        <input name="departmentType" class="departmentType" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
                 <td colspan="2">手册基本信息</td>
@@ -145,15 +147,20 @@
     $(function(){
         var manualType = '${search.manualType}';
         var versionType = '${search.versionType}';
+        var departmentType = '${search.departmentType}';
+        if(departmentType){
+            $('.departmentType').val(departmentType);
+        }
         $.ajax({
-            url:'findManualType.jhtml',
-            type:'GET',
+            url:'../manual_type/findManualType.jhtml',
+            type:'POST',
             dataType: 'json' ,
             data:{
+                departmentType:departmentType
             },
             success:function(data){
                 $(".manualType").empty()
-                $(".manualType").append("<option  value=''>全部</option>")
+                $(".manualType").append("<option  value=''>请选择</option>")
                 for (var i = 0; i < data.length; i++) {
                     var str="";
                     if (data[i].id==parseInt(manualType)){
@@ -168,14 +175,15 @@
             }
         });
         $.ajax({
-            url:'findVersionType.jhtml',
-            type:'GET',
+            url:'../version_type/findVersionType.jhtml',
+            type:'POST',
             dataType: 'json' ,
             data:{
+                departmentType:departmentType
             },
             success:function(data){
                 $(".versionType").empty()
-                $(".versionType").append("<option  value=''>全部</option>")
+                $(".versionType").append("<option  value=''>请选择</option>")
                 for (var i = 0; i < data.length; i++) {
                     var str="";
                     if (data[i].id==parseInt(versionType)){

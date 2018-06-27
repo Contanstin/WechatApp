@@ -5,7 +5,7 @@ import com.hpmont.domain.page.PageSearch;
 /**
  * Created by 徐 on 2018/5/30.
  */
-public class SearchMenu extends PageSearch{
+public class SearchMenu extends SearchCommon{
 
     private Integer parentId;
 

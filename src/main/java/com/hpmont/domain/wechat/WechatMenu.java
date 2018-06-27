@@ -14,6 +14,8 @@ public class WechatMenu {
 
     private String menuUrl;
 
+    private String iconUrl;
+
     private String description;
 
     private Integer orderNum;
@@ -28,7 +30,11 @@ public class WechatMenu {
 
     private List<WechatMenu> children;
 
-    private Byte status;
+    private Integer languageType;
+
+    private Integer departmentType;
+
+    private Integer status;
 
     private Date gmtCreate;
 
@@ -63,7 +69,7 @@ public class WechatMenu {
     }
 
     public void setMenuName(String menuName) {
-        this.menuName = menuName == null ? null : menuName.trim();
+        this.menuName = menuName;
     }
 
     public String getMenuUrl() {
@@ -71,7 +77,15 @@ public class WechatMenu {
     }
 
     public void setMenuUrl(String menuUrl) {
-        this.menuUrl = menuUrl == null ? null : menuUrl.trim();
+        this.menuUrl = menuUrl;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public String getDescription() {
@@ -79,7 +93,7 @@ public class WechatMenu {
     }
 
     public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+        this.description = description;
     }
 
     public Integer getOrderNum() {
@@ -106,11 +120,51 @@ public class WechatMenu {
         this.versionType = versionType;
     }
 
-    public Byte getStatus() {
+    public String getManualName() {
+        return manualName;
+    }
+
+    public void setManualName(String manualName) {
+        this.manualName = manualName;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public void setVersionName(String versionName) {
+        this.versionName = versionName;
+    }
+
+    public List<WechatMenu> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<WechatMenu> children) {
+        this.children = children;
+    }
+
+    public Integer getLanguageType() {
+        return languageType;
+    }
+
+    public void setLanguageType(Integer languageType) {
+        this.languageType = languageType;
+    }
+
+    public Integer getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Integer departmentType) {
+        this.departmentType = departmentType;
+    }
+
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -128,29 +182,5 @@ public class WechatMenu {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
-    }
-
-    public List<WechatMenu> getChildren() {
-        return children;
-    }
-
-    public void setChildren(List<WechatMenu> children) {
-        this.children = children;
-    }
-
-    public String getManualName() {
-        return manualName;
-    }
-
-    public void setManualName(String manualName) {
-        this.manualName = manualName;
-    }
-
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public void setVersionName(String versionName) {
-        this.versionName = versionName;
     }
 }

@@ -5,7 +5,7 @@ import com.hpmont.domain.page.PageSearch;
 /**
  * Created by 徐 on 2018/5/30.
  */
-public class SearchFault extends PageSearch{
+public class SearchFault extends SearchCommon{
 
     private String faultName;
 

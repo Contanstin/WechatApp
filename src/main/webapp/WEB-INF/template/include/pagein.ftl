@@ -2,6 +2,7 @@
 <input type="hidden" id="searchProperty" name="searchProperty" value="${page.searchProperty}" />
 <input type="hidden" id="orderProperty" name="orderProperty" value="${page.orderProperty}" />
 <input type="hidden" id="orderDirection" name="orderDirection" value="${page.orderDirection}" />
+<input name="departmentType" class="departmentType" value="" type="hidden">
 [#--[#if totalPages > 1]--]
 <div class="pagination">
 [#if page.isFirstPage]

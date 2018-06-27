@@ -6,12 +6,15 @@ import com.github.pagehelper.PageInfo;
 import com.hpmont.constants.Constant;
 import com.hpmont.dao.mapper.wechat.DictManualMapper;
 import com.hpmont.domain.page.PageSearch;
+import com.hpmont.domain.search.SearchCommon;
 import com.hpmont.domain.wechat.DictManual;
 import com.hpmont.domain.wechat.DictVersion;
 import com.hpmont.service.wechat.IDictManualService;
 import com.hpmont.service.wechat.IDictVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by 徐 on 2018/6/11.
@@ -24,9 +27,9 @@ public class DictManualService implements IDictManualService{
     private DictManualMapper dictManualDao;
 
     @Override
-    public PageInfo<DictManual> pageManualType(PageSearch search) {
+    public PageInfo<DictManual> pageManualType(SearchCommon search) {
         PageHelper.startPage(search.getCurrpage(), Constant.PAGEROWS);
-        Page<DictManual> list = dictManualDao.findManualType();
+        Page<DictManual> list = dictManualDao.findManualType(search);
         PageInfo<DictManual> pageInfo=new PageInfo<>(list);
         pageInfo.setList(list);
         return pageInfo;
@@ -45,5 +48,10 @@ public class DictManualService implements IDictManualService{
     @Override
     public void delete(Integer id) {
         dictManualDao.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public List<DictManual> findManualType(SearchCommon search) {
+        return dictManualDao.findManualType(search);
     }
 }

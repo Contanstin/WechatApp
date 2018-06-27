@@ -1,7 +1,7 @@
 package com.hpmont.dao.mapper.wechat;
 
 import com.github.pagehelper.Page;
-import com.hpmont.domain.page.PageSearch;
+import com.hpmont.domain.search.SearchCommon;
 import com.hpmont.domain.wechat.DictManual;
 
 public interface DictManualMapper {
@@ -11,5 +11,5 @@ public interface DictManualMapper {
 
     int updateByPrimaryKeySelective(DictManual record);
 
-    Page<DictManual> findManualType();
+    Page<DictManual> findManualType(SearchCommon search);
 }

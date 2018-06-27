@@ -1,6 +1,6 @@
 package com.hpmont.domain.manual.authority;
 
-import com.hpmont.domain.manual.PageSearch;
+import com.hpmont.domain.page.PageSearch;
 
 /**
  * Created by fanlinlin on 2016/11/16.

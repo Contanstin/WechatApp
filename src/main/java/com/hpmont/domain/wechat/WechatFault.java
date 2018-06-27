@@ -2,7 +2,7 @@ package com.hpmont.domain.wechat;
 
 import java.util.Date;
 
-public class FaultDescription {
+public class WechatFault {
     private Integer id;
 
     private String faultName;
@@ -13,9 +13,11 @@ public class FaultDescription {
 
     private String faultSolution;
 
-    private String versionName;
-
     private Integer versionType;
+
+    private Integer languageType;
+
+    private Integer departmentType;
 
     private Integer status;
 
@@ -44,7 +46,7 @@ public class FaultDescription {
     }
 
     public void setFaultCode(String faultCode) {
-        this.faultCode = faultCode == null ? null : faultCode.trim();
+        this.faultCode = faultCode;
     }
 
     public String getFaultImplication() {
@@ -52,7 +54,7 @@ public class FaultDescription {
     }
 
     public void setFaultImplication(String faultImplication) {
-        this.faultImplication = faultImplication == null ? null : faultImplication.trim();
+        this.faultImplication = faultImplication;
     }
 
     public String getFaultSolution() {
@@ -60,7 +62,31 @@ public class FaultDescription {
     }
 
     public void setFaultSolution(String faultSolution) {
-        this.faultSolution = faultSolution == null ? null : faultSolution.trim();
+        this.faultSolution = faultSolution;
+    }
+
+    public Integer getVersionType() {
+        return versionType;
+    }
+
+    public void setVersionType(Integer versionType) {
+        this.versionType = versionType;
+    }
+
+    public Integer getLanguageType() {
+        return languageType;
+    }
+
+    public void setLanguageType(Integer languageType) {
+        this.languageType = languageType;
+    }
+
+    public Integer getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Integer departmentType) {
+        this.departmentType = departmentType;
     }
 
     public Integer getStatus() {
@@ -85,21 +111,5 @@ public class FaultDescription {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
-    }
-
-    public String getVersionName() {
-        return versionName;
-    }
-
-    public void setVersionName(String versionName) {
-        this.versionName = versionName;
-    }
-
-    public Integer getVersionType() {
-        return versionType;
-    }
-
-    public void setVersionType(Integer versionType) {
-        this.versionType = versionType;
     }
 }

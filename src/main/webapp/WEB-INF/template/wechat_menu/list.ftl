@@ -53,6 +53,7 @@
                 <select name="versionType" class="versionType" id="versionType" style="width: 120px" >
 
                 </select>
+                <input name="departmentType" class="departmentType" value="" type="hidden">
          </div>
             <button type="button" onclick=" $.firstPageSkip();">查询</button>
         </div>
@@ -107,7 +108,7 @@
             </td>
             <td>
                 [#if menuLs.menuType==1]
-                    <a  href="javascript:addRecord('${menuLs.id}')">[新增二级菜单]</a>
+                    <a  href="javascript:addRecord('${menuLs.id}','${menuLs.menuType}')">[新增二级菜单]</a>
                 [/#if]
                 <a  href="javascript:modify('${menuLs.id}','${menuLs.parentId}','${menuLs.menuName}','${menuLs.menuType}','${menuLs.menuUrl}','${menuLs.description}','${menuLs.orderNum}','${submenus.manualType}','${menuLs.versionType}','${menuLs.status}')">[更新]</a>
             </td>
@@ -144,12 +145,51 @@
                     [/#if]
                 </td>
                 <td>
+                    [#if menuLs.menuType==1]
+                        <a  href="javascript:addRecord('${submenus.id}','${submenus.menuType}')">[新增三级菜单]</a>
+                    [/#if]
                     <a  href="javascript:modify('${submenus.id}','${submenus.parentId}','${submenus.menuName}','${submenus.menuType}','${submenus.menuUrl}','${submenus.description}','${submenus.orderNum}','${submenus.manualType}','${submenus.versionType}','${submenus.status}')">[更新]</a>
                 </td>
                 <td>
                     <a  href="javascript:deleteMenu('${submenus.id}')">[删除]</a>
                 </td>
             </tr>
+            [#list submenus.children as cmenus]
+                <tr id="${cmenus.id}"  pId="${cmenus.parentId}">
+                    <td>
+                    ${cmenus.menuName}
+                    </td>
+                    <td>
+                    ${cmenus.menuType}
+                    </td>
+                    <td>
+                    ${cmenus.menuUrl}
+                    </td>
+                    <td>
+                    ${cmenus.description}
+                    </td>
+                    <td>
+                    ${cmenus.orderNum}
+                    </td>
+                    <td>
+                    ${cmenus.manualName}
+                    </td>
+                    <td>
+                    ${cmenus.versionName}
+                    </td>
+                    <td>
+                        [#if cmenus.status==1 ]启用
+                        [#elseif cmenus.status==2 ]禁用
+                        [/#if]
+                    </td>
+                    <td>
+                        <a  href="javascript:modify('${cmenus.id}','${cmenus.parentId}','${cmenus.menuName}','${cmenus.menuType}','${cmenus.menuUrl}','${cmenus.description}','${cmenus.orderNum}','${cmenus.manualType}','${cmenus.versionType}','${cmenus.status}')">[更新]</a>
+                    </td>
+                    <td>
+                        <a  href="javascript:deleteMenu('${cmenus.id}')">[删除]</a>
+                    </td>
+                </tr>
+            [/#list]
         [/#list]
     [/#list]
     </table>
@@ -157,8 +197,9 @@
 </form>
 
 <div class="dataDiv" id="dataDiv">
-    <form id="dataForm" action="upload.jhtml" method="POST" enctype="multipart/form-data" >
+    <form id="dataForm" action="edit.jhtml" method="POST" enctype="multipart/form-data" >
         <input name="id" id="id" value="" type="hidden">
+        <input name="departmentType" class="departmentType" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
                 <td colspan="4">微信菜单基本信息</td>
@@ -224,15 +265,20 @@
         if(versionType){
             $('#versionType').val(versionType);
         }
+        var departmentType = '${search.departmentType}';
+        if(departmentType){
+            $('.departmentType').val(departmentType);
+        }
         $.ajax({
-            url:'../manual/findVersionType.jhtml',
-            type:'GET',
+            url:'../version_type/findVersionType.jhtml',
+            type:'POST',
             dataType: 'json' ,
             data:{
+                departmentType:departmentType
             },
             success:function(data){
                 $(".versionType").empty()
-   /*             $(".versionType").append("<option  value=''>全部</option>")*/
+   /*             $(".versionType").append("<option  value=''>请选择</option>")*/
                 for (var i = 0; i < data.length; i++) {
                     var str="";
                     if (data[i].id==parseInt(versionType)){
@@ -247,10 +293,11 @@
             }
         });
         $.ajax({
-            url:'../manual/findManualType.jhtml',
-            type:'GET',
+            url:'../manual_type/findManualType.jhtml',
+            type:'POST',
             dataType: 'json' ,
             data:{
+                departmentType:departmentType
             },
             success:function(data){
                 $(".manualType").empty()
@@ -295,11 +342,11 @@
         return false;
     });
 
-    var addRecord = function(pid){
+    var addRecord = function(pid,menuType){
 
         $('#qversionType').val($('#versionType option:selected') .val())
         if (pid!=null){
-            $('#qmenuType').val(2);
+            $('#qmenuType').val(parseInt(menuType)+1);
             $('#parentId').val(pid);
         }else {
             $('#qmenuType').val(1);

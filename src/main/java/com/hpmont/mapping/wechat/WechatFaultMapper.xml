@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hpmont.dao.mapper.wechat.FaultDescriptionMapper" >
-  <resultMap id="BaseResultMap" type="com.hpmont.domain.wechat.FaultDescription" >
+<mapper namespace="com.hpmont.dao.mapper.wechat.WechatFaultMapper" >
+  <resultMap id="BaseResultMap" type="com.hpmont.domain.wechat.WechatFault" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="fault_name" property="faultName" jdbcType="VARCHAR" />
     <result column="fault_code" property="faultCode" jdbcType="VARCHAR" />
     <result column="fault_implication" property="faultImplication" jdbcType="VARCHAR" />
     <result column="fault_solution" property="faultSolution" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="BIT" />
+    <result column="version_type" property="versionType" jdbcType="TINYINT" />
+    <result column="language_type" property="languageType" jdbcType="TINYINT" />
+    <result column="department_type" property="departmentType" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, fault_name, fault_code, fault_implication, fault_solution, status, gmt_create, 
+    id, fault_name, version_type, language_type, department_type, status, gmt_create, 
     gmt_modified
   </sql>
   <select id="findFaultListByApp" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchFault" >
     select
     id, fault_name, fault_code, fault_implication, fault_solution
-    from fault_description
+    from wechat_fault
     where status =1
     <if test="faultName!=null and faultName!=''">
       AND fault_name LIKE CONCAT('%',#{faultName,jdbcType=VARCHAR}, '%')
@@ -32,12 +35,18 @@
     <if test="versionType!=null and versionType!=0">
       AND version_type =#{versionType,jdbcType=INTEGER}
     </if>
+    <if test="departmentType!=null and departmentType!=''">
+      AND department_type =#{departmentType,jdbcType=INTEGER}
+    </if>
+    <if test="languageType!=null and languageType!=''">
+      AND language_type =#{languageType,jdbcType=INTEGER}
+    </if>
   </select>
 
   <select id="findFaultList" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchFault" >
     select
     fd.id, fd.fault_name, fd.fault_code, fd.fault_implication, fd.fault_solution, fd.status,dv.name AS versionName
-    from fault_description fd
+    from wechat_fault fd
     LEFT JOIN
     dict_version dv ON  fd.version_type=dv.id
     where 1 =1
@@ -50,39 +59,44 @@
     <if test="versionType!=null and versionType!=0">
       AND fd.version_type =#{versionType,jdbcType=INTEGER}
     </if>
+    <if test="departmentType!=null and departmentType!=''">
+      AND fd.department_type =#{departmentType,jdbcType=INTEGER}
+    </if>
+    <if test="languageType!=null and languageType!=''">
+      AND fd.language_type =#{languageType,jdbcType=INTEGER}
+    </if>
   </select>
 
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from fault_description
+    delete from wechat_fault
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.hpmont.domain.wechat.FaultDescription" >
-    insert into fault_description (id, fault_name, fault_code, 
-      fault_implication, fault_solution, status, version_type ,
-      gmt_create, gmt_modified)
-    values (#{id,jdbcType=INTEGER}, #{faultName,jdbcType=VARCHAR}, #{faultCode,jdbcType=VARCHAR}, 
-      #{faultImplication,jdbcType=VARCHAR}, #{faultSolution,jdbcType=VARCHAR}, #{status,jdbcType=BIT},  #{versionType,jdbcType=BIT},
-      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP})
+  <insert id="insert" parameterType="com.hpmont.domain.wechat.WechatFault" >
+    insert into wechat_fault (id, fault_name, version_type, 
+      language_type, department_type, status, 
+      gmt_create, gmt_modified, fault_code, 
+      fault_implication, fault_solution
+      )
+    values (#{id,jdbcType=INTEGER}, #{faultName,jdbcType=VARCHAR}, #{versionType,jdbcType=TINYINT}, 
+      #{languageType,jdbcType=TINYINT}, #{departmentType,jdbcType=TINYINT}, #{status,jdbcType=BIT}, 
+      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{faultCode,jdbcType=LONGVARCHAR}, 
+      #{faultImplication,jdbcType=LONGVARCHAR}, #{faultSolution,jdbcType=LONGVARCHAR}
+      )
   </insert>
-
-  <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.wechat.FaultDescription" >
-    update fault_description
+  <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.wechat.WechatFault" >
+    update wechat_fault
     <set >
       <if test="faultName != null" >
         fault_name = #{faultName,jdbcType=VARCHAR},
       </if>
-      <if test="faultCode != null" >
-        fault_code = #{faultCode,jdbcType=VARCHAR},
-      </if>
-      <if test="faultImplication != null" >
-        fault_implication = #{faultImplication,jdbcType=VARCHAR},
-      </if>
-      <if test="faultSolution != null" >
-        fault_solution = #{faultSolution,jdbcType=VARCHAR},
-      </if>
       <if test="versionType != null" >
-        version_type = #{versionType,jdbcType=VARCHAR},
+        version_type = #{versionType,jdbcType=TINYINT},
+      </if>
+      <if test="languageType != null" >
+        language_type = #{languageType,jdbcType=TINYINT},
+      </if>
+      <if test="departmentType != null" >
+        department_type = #{departmentType,jdbcType=TINYINT},
       </if>
       <if test="status != null" >
         status = #{status,jdbcType=BIT},
@@ -92,6 +106,15 @@
       </if>
       <if test="gmtModified != null" >
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+      <if test="faultCode != null" >
+        fault_code = #{faultCode,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="faultImplication != null" >
+        fault_implication = #{faultImplication,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="faultSolution != null" >
+        fault_solution = #{faultSolution,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

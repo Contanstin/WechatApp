@@ -5,6 +5,10 @@ public class DictManual {
 
     private String name;
 
+    private Integer languageType;
+
+    private Integer departmentType;
+
     private String description;
 
     public Integer getId() {
@@ -29,5 +33,21 @@ public class DictManual {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public Integer getLanguageType() {
+        return languageType;
+    }
+
+    public void setLanguageType(Integer languageType) {
+        this.languageType = languageType;
+    }
+
+    public Integer getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Integer departmentType) {
+        this.departmentType = departmentType;
     }
 }

@@ -1,13 +1,7 @@
 package com.hpmont.service.wechat.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.hpmont.constants.Constant;
 import com.hpmont.dao.mapper.wechat.WechatMenuMapper;
-import com.hpmont.domain.page.PageSearch;
 import com.hpmont.domain.search.SearchMenu;
-import com.hpmont.domain.wechat.Slideshow;
 import com.hpmont.domain.wechat.WechatMenu;
 import com.hpmont.service.wechat.IWechatMenuService;
 import org.springframework.beans.factory.annotation.Autowired;

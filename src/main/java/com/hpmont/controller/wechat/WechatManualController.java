@@ -2,9 +2,10 @@ package com.hpmont.controller.wechat;
 
 import com.github.pagehelper.PageInfo;
 import com.hpmont.controller.BaseController;
-import com.hpmont.domain.page.PageSearch;
-import com.hpmont.domain.wechat.Slideshow;
-import com.hpmont.service.wechat.ISlideshowService;
+import com.hpmont.domain.search.SearchManual;
+import com.hpmont.domain.wechat.DictManual;
+import com.hpmont.domain.wechat.WechatManual;
+import com.hpmont.service.wechat.IWechatManualService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -18,48 +19,47 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
 
 /**
- * Created by 徐 on 2018/5/21.
+ * Created by 徐 on 2018/5/28.
  */
 @Controller
-@RequestMapping("/slideshow")
-public class SlideshowController extends BaseController{
+@RequestMapping("/manual")
+public class WechatManualController extends BaseController{
 
     @Autowired
-    private ISlideshowService slideshowService;
+    private IWechatManualService manualService;
 
-    @Value("${file.slideshow.upload.base}")
+    @Value("${file.manual.upload.base}")
     private String baseUrl;
     @Value("${project.path}")
     private String projectPath;
 
     @RequestMapping(value = "/list")
-    public String findAll(Model model, PageSearch search){
+    public String findAll(Model model, SearchManual search){
         try {
-            PageInfo<Slideshow> list = slideshowService.findSlideshowList(search);
+            PageInfo<WechatManual> list = manualService.findManualList(search);
             model.addAttribute("page",list);
             model.addAttribute("search",search);
         } catch (Exception e) {
-            logger.error("查询轮播图列表出错", e);
+            logger.error("查询手册列表出错", e);
         }
-        return "/slideshow/list";
+        return "/manual/list";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public String edit(@RequestParam MultipartFile [] file, Slideshow slideshow){
+    public String edit(@RequestParam MultipartFile[] file, WechatManual manual){
         String realName="";
         try {
             if (null!=file&&file.length>0){
                 for (MultipartFile multipartFile : file) {
                     if (multipartFile.getSize() > 0) {
-                        if (null!=slideshow.getRealName()){
-                            File df = new File(baseUrl+slideshow.getRealName());
+                        if (null!=manual.getRealName()){
+                            File df = new File(baseUrl+manual.getRealName());
                             if (df.exists() && df.isFile()) {
                                 df.delete();
                             }
@@ -69,27 +69,27 @@ public class SlideshowController extends BaseController{
                         if (!f.getParentFile().exists()) {
                             f.getParentFile().mkdirs();
                         }
-                        if (slideshow.getImageName()==null)
-                        slideshow.setImageName(filename.substring(0, filename.lastIndexOf(".")));
-                        realName = new Date().getTime() + "." + filename.substring(filename.lastIndexOf(".") + 1);
+                        if (manual.getManualName()==null)
+                        manual.setManualName(filename.substring(0, filename.lastIndexOf(".")));
+                        manual.setManualFormat(filename.substring(filename.lastIndexOf(".") + 1));
+                        realName= new Date().getTime()+"."+manual.getManualFormat();
                         multipartFile.transferTo(new File(baseUrl + realName));
-                        slideshow.setImageUrl(projectPath + "slideshow/download?realName=" + realName);
-                        slideshow.setRealName(realName);
+                        manual.setManualUrl(projectPath+"manual/download?realName="+realName);
+                        manual.setRealName(realName);
                     }
-            }
-            if (null==slideshow.getId()){
-                slideshowService.insert(slideshow);
-            }else {
-                slideshowService.update(slideshow);
-            }
+                    if (null==manual.getId()){
+                        manualService.insert(manual);
+                    }else {
+                        manualService.update(manual);
+                    }
+                }
             }
         } catch (Exception e) {
-            logger.error("编辑轮播图失败",e);
-            return errorResult("编辑轮播图失败");
+            logger.error("编辑手册失败",e);
+            return errorResult("编辑手册失败");
         }
         return success();
     }
-
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
@@ -97,12 +97,12 @@ public class SlideshowController extends BaseController{
         try {
             File file = new File(baseUrl+realName);
             if (file.exists() && file.isFile()) {
-               file.delete();
+                file.delete();
             }
-            slideshowService.delete(id);
+            manualService.delete(id);
         } catch (Exception e) {
-            logger.error("删除轮播图失败",e);
-            return errorResult("删除轮播图失败");
+            logger.error("删除手册失败",e);
+            return errorResult("删除手册失败");
         }
         return success();
     }
@@ -111,7 +111,6 @@ public class SlideshowController extends BaseController{
     public ResponseEntity<byte[]> String(String realName) throws IOException {
         File file=new File(baseUrl+realName);
         return getResponse(realName,file);
-
     }
 
     private ResponseEntity<byte[]> getResponse(String filename,File file) throws IOException {
@@ -135,36 +134,5 @@ public class SlideshowController extends BaseController{
         }
         return response;
     }
-
-    @RequestMapping("/showPic")
-    public void showPicture(String realName , HttpServletResponse response){
-        File imgFile = new File(baseUrl+ realName);
-        responseFile(response, imgFile);
-    }
-
-    /**
-     * 响应输出图片文件
-     * @param response
-     * @param imgFile
-     */
-    private void responseFile(HttpServletResponse response, File imgFile) {
-
-        try(
-                InputStream is = new FileInputStream(imgFile);
-            OutputStream os = response.getOutputStream();
-            ){
-            byte [] buffer = new byte[1024]; // 图片文件流缓存池
-            while(is.read(buffer) != -1){
-                os.write(buffer);
-            }
-            os.flush();
-        } catch (IOException e){
-            e.printStackTrace();
-        } finally{
-
-        }
-    }
-
-
 
 }

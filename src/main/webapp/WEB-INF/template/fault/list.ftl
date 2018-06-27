@@ -41,6 +41,7 @@
                     <input type="text" name="faultName" id="faultName"  />
                     <span  class="arrow">故障代码:</span>
                     <input type="text" name="faultCode" id="faultCode"  />
+                    <input name="departmentType" class="departmentType" value="" type="hidden">
                 </div>
                 <button type="button" onclick=" $.firstPageSkip();">查询</button>
          </div>
@@ -87,6 +88,7 @@
 <div class="dataDiv" id="dataDiv">
     <form id="dataForm" action="upload.jhtml" method="POST" enctype="multipart/form-data" >
         <input name="id" id="id" value="" type="hidden">
+        <input name="departmentType" class="departmentType" value="" type="hidden">
         <table class="gridtable">
             <tr align="center">
                 <td colspan="2">故障说明基本信息</td>
@@ -155,15 +157,20 @@
         if(versionType){
             $('#versionType').val(versionType);
         }
+        var departmentType = '${search.departmentType}';
+        if(departmentType){
+            $('.departmentType').val(departmentType);
+        }
         $.ajax({
-            url:'../manual/findVersionType.jhtml',
-            type:'GET',
+            url:'../version_type/findVersionType.jhtml',
+            type:'POST',
             dataType: 'json' ,
             data:{
+                departmentType:departmentType
             },
             success:function(data){
                 $(".versionType").empty()
-                $(".versionType").append("<option  value=''>全部</option>")
+                $(".versionType").append("<option  value=''>请选择</option>")
                 for (var i = 0; i < data.length; i++) {
                     var str="";
                     if (data[i].id==parseInt(versionType)){

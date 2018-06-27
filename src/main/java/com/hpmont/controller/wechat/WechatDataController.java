@@ -4,14 +4,12 @@ import com.hpmont.controller.BaseController;
 import com.hpmont.domain.search.SearchFault;
 import com.hpmont.domain.search.SearchManual;
 import com.hpmont.domain.search.SearchMenu;
+import com.hpmont.domain.search.SearchCommon;
 import com.hpmont.domain.wechat.DictVersion;
-import com.hpmont.domain.wechat.FaultDescription;
-import com.hpmont.domain.wechat.ServiceManual;
+import com.hpmont.domain.wechat.WechatManual;
+import com.hpmont.domain.wechat.WechatFault;
 import com.hpmont.domain.wechat.WechatMenu;
-import com.hpmont.service.wechat.IFaultDescriptionService;
-import com.hpmont.service.wechat.IServiceManualService;
-import com.hpmont.service.wechat.ISlideshowService;
-import com.hpmont.service.wechat.IWechatMenuService;
+import com.hpmont.service.wechat.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,21 +26,24 @@ import java.util.List;
 public class WechatDataController extends BaseController {
 
     @Autowired
-    private IFaultDescriptionService faultService;
+    private IWechatFaultService faultService;
 
     @Autowired
     private IWechatMenuService wechatMenuService;
 
     @Autowired
-    private IServiceManualService manualService;
+    private IWechatManualService manualService;
 
     @Autowired
-    private ISlideshowService slideshowService;
+    private IWechatImageService imageService;
+
+    @Autowired
+    private IDictVersionService versionService;
 
     @RequestMapping(value = "/findFaultListByApp")
     @ResponseBody
-    public List<FaultDescription> findFaultListByApp(@RequestBody SearchFault search){
-        List<FaultDescription> list=null;
+    public List<WechatFault> findFaultListByApp(@RequestBody SearchFault search){
+        List<WechatFault> list=null;
         try {
             list= faultService.findFaultListByApp(search);
         } catch (Exception e) {
@@ -66,10 +67,10 @@ public class WechatDataController extends BaseController {
 
     @ResponseBody
     @RequestMapping(value = "/findSlideshowUrlByApp")
-    public  List<String> findSlideshowUrlByApp(){
+    public  List<String> findSlideshowUrlByApp(@RequestBody SearchCommon search){
         List<String> list=null;
         try {
-            list = slideshowService.findSlideshowUrlByApp();
+            list = imageService.findSlideshowUrlByApp(search);
         } catch (Exception e) {
             logger.error("微信查询轮播图url列表出错", e);
         }
@@ -78,10 +79,10 @@ public class WechatDataController extends BaseController {
 
     @RequestMapping(value = "/findVersionTypeByApp")
     @ResponseBody
-    public List<DictVersion> findVersionType(){
+    public List<DictVersion> findVersionType(@RequestBody SearchCommon search){
         List<DictVersion> list=null;
         try {
-            list= manualService.findVersionType();
+            list= versionService.findVersionType(search);
         } catch (Exception e) {
             logger.error("查询软件版本失败",e);
         }
@@ -92,8 +93,8 @@ public class WechatDataController extends BaseController {
 
     @RequestMapping(value = "/findManualListByApp")
     @ResponseBody
-    public List<ServiceManual> findManualListByApp(@RequestBody SearchManual search){
-        List<ServiceManual> list=null;
+    public List<WechatManual> findManualListByApp(@RequestBody SearchManual search){
+        List<WechatManual> list=null;
         try {
             list= manualService.findManualListByApp(search);
         } catch (Exception e) {

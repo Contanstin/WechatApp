@@ -2,7 +2,7 @@ package com.hpmont.domain.wechat;
 
 import java.util.Date;
 
-public class Slideshow {
+public class WechatImage {
     private Integer id;
 
     private String imageName;
@@ -12,6 +12,14 @@ public class Slideshow {
     private String imageUrl;
 
     private Integer orderNum;
+
+    private String description;
+
+    private Integer languageType;
+
+    private Integer departmentType;
+
+    private Integer isEnable;
 
     private Integer status;
 
@@ -32,7 +40,7 @@ public class Slideshow {
     }
 
     public void setImageName(String imageName) {
-        this.imageName = imageName == null ? null : imageName.trim();
+        this.imageName = imageName;
     }
 
     public String getRealName() {
@@ -48,7 +56,7 @@ public class Slideshow {
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl == null ? null : imageUrl.trim();
+        this.imageUrl = imageUrl;
     }
 
     public Integer getOrderNum() {
@@ -57,6 +65,38 @@ public class Slideshow {
 
     public void setOrderNum(Integer orderNum) {
         this.orderNum = orderNum;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getLanguageType() {
+        return languageType;
+    }
+
+    public void setLanguageType(Integer languageType) {
+        this.languageType = languageType;
+    }
+
+    public Integer getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Integer departmentType) {
+        this.departmentType = departmentType;
+    }
+
+    public Integer getIsEnable() {
+        return isEnable;
+    }
+
+    public void setIsEnable(Integer isEnable) {
+        this.isEnable = isEnable;
     }
 
     public Integer getStatus() {

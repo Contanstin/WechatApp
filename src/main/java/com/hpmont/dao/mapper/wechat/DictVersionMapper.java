@@ -1,7 +1,7 @@
 package com.hpmont.dao.mapper.wechat;
 
 import com.github.pagehelper.Page;
-import com.hpmont.domain.page.PageSearch;
+import com.hpmont.domain.search.SearchCommon;
 import com.hpmont.domain.wechat.DictVersion;
 
 public interface DictVersionMapper {
@@ -11,6 +11,6 @@ public interface DictVersionMapper {
 
     int updateByPrimaryKeySelective(DictVersion record);
 
-    Page<DictVersion> findVersionType();
+    Page<DictVersion> findVersionType(SearchCommon search);
 
 }

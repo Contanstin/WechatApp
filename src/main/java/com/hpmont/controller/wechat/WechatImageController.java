@@ -2,11 +2,10 @@ package com.hpmont.controller.wechat;
 
 import com.github.pagehelper.PageInfo;
 import com.hpmont.controller.BaseController;
-import com.hpmont.domain.search.SearchManual;
-import com.hpmont.domain.wechat.DictManual;
-import com.hpmont.domain.wechat.DictVersion;
-import com.hpmont.domain.wechat.ServiceManual;
-import com.hpmont.service.wechat.IServiceManualService;
+import com.hpmont.domain.page.PageSearch;
+import com.hpmont.domain.search.SearchCommon;
+import com.hpmont.domain.wechat.WechatImage;
+import com.hpmont.service.wechat.IWechatImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -14,74 +13,53 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
-import java.util.List;
 
 /**
- * Created by 徐 on 2018/5/28.
+ * Created by 徐 on 2018/5/21.
  */
 @Controller
-@RequestMapping("/manual")
-public class ServiceManualController extends BaseController{
+@RequestMapping("/slideshow")
+public class WechatImageController extends BaseController{
 
     @Autowired
-    private IServiceManualService manualService;
+    private IWechatImageService imageService;
 
-    @Value("${file.manual.upload.base}")
+    @Value("${file.slideshow.upload.base}")
     private String baseUrl;
     @Value("${project.path}")
     private String projectPath;
 
     @RequestMapping(value = "/list")
-    public String findAll(Model model, SearchManual search){
+    public String findAll(Model model, SearchCommon search){
         try {
-            PageInfo<ServiceManual> list = manualService.findManualList(search);
+            PageInfo<WechatImage> list = imageService.findSlideshowList(search);
             model.addAttribute("page",list);
             model.addAttribute("search",search);
         } catch (Exception e) {
-            logger.error("查询手册列表出错", e);
+            logger.error("查询轮播图列表出错", e);
         }
-        return "/manual/list";
-    }
-
-    @RequestMapping(value = "/findManualType")
-    @ResponseBody
-    public List<DictManual> findManualType(){
-        List<DictManual> list=null;
-        try {
-            list= manualService.findManualType();
-        } catch (Exception e) {
-            logger.error("查询手册种类失败",e);
-        }
-        return list;
-    }
-
-    @RequestMapping(value = "/findVersionType")
-    @ResponseBody
-    public List<DictVersion> findVersionType(){
-        List<DictVersion> list=null;
-        try {
-            list= manualService.findVersionType();
-        } catch (Exception e) {
-            logger.error("查询软件版本失败",e);
-        }
-        return list;
+        return "/slideshow/list";
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public String edit(@RequestParam MultipartFile[] file, ServiceManual manual){
+    public String edit(@RequestParam MultipartFile [] file, WechatImage slideshow){
         String realName="";
         try {
             if (null!=file&&file.length>0){
                 for (MultipartFile multipartFile : file) {
                     if (multipartFile.getSize() > 0) {
-                        if (null!=manual.getRealName()){
-                            File df = new File(baseUrl+manual.getRealName());
+                        if (null!=slideshow.getRealName()){
+                            File df = new File(baseUrl+slideshow.getRealName());
                             if (df.exists() && df.isFile()) {
                                 df.delete();
                             }
@@ -91,27 +69,27 @@ public class ServiceManualController extends BaseController{
                         if (!f.getParentFile().exists()) {
                             f.getParentFile().mkdirs();
                         }
-                        if (manual.getManualName()==null)
-                        manual.setManualName(filename.substring(0, filename.lastIndexOf(".")));
-                        manual.setManualFormat(filename.substring(filename.lastIndexOf(".") + 1));
-                        realName= new Date().getTime()+"."+manual.getManualFormat();
+                        if (slideshow.getImageName()==null)
+                        slideshow.setImageName(filename.substring(0, filename.lastIndexOf(".")));
+                        realName = new Date().getTime() + "." + filename.substring(filename.lastIndexOf(".") + 1);
                         multipartFile.transferTo(new File(baseUrl + realName));
-                        manual.setManualUrl(projectPath+"manual/download?realName="+realName);
-                        manual.setRealName(realName);
+                        slideshow.setImageUrl(projectPath + "slideshow/download?realName=" + realName);
+                        slideshow.setRealName(realName);
                     }
-                    if (null==manual.getId()){
-                        manualService.insert(manual);
-                    }else {
-                        manualService.update(manual);
-                    }
-                }
+            }
+            if (null==slideshow.getId()){
+                imageService.insert(slideshow);
+            }else {
+                imageService.update(slideshow);
+            }
             }
         } catch (Exception e) {
-            logger.error("编辑手册失败",e);
-            return errorResult("编辑手册失败");
+            logger.error("编辑轮播图失败",e);
+            return errorResult("编辑轮播图失败");
         }
         return success();
     }
+
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
@@ -119,12 +97,12 @@ public class ServiceManualController extends BaseController{
         try {
             File file = new File(baseUrl+realName);
             if (file.exists() && file.isFile()) {
-                file.delete();
+               file.delete();
             }
-            manualService.delete(id);
+            imageService.delete(id);
         } catch (Exception e) {
-            logger.error("删除手册失败",e);
-            return errorResult("删除手册失败");
+            logger.error("删除轮播图失败",e);
+            return errorResult("删除轮播图失败");
         }
         return success();
     }
@@ -133,6 +111,7 @@ public class ServiceManualController extends BaseController{
     public ResponseEntity<byte[]> String(String realName) throws IOException {
         File file=new File(baseUrl+realName);
         return getResponse(realName,file);
+
     }
 
     private ResponseEntity<byte[]> getResponse(String filename,File file) throws IOException {
@@ -156,5 +135,36 @@ public class ServiceManualController extends BaseController{
         }
         return response;
     }
+
+    @RequestMapping("/showPic")
+    public ResponseEntity<byte[]> showPicture(String realName) throws IOException {
+        File file=new File(baseUrl+realName);
+        return getResponse(realName,file);
+    }
+
+    /**
+     * 响应输出图片文件
+     * @param response
+     * @param imgFile
+     */
+    private void responseFile(HttpServletResponse response, File imgFile) {
+
+        try(
+                InputStream is = new FileInputStream(imgFile);
+            OutputStream os = response.getOutputStream();
+            ){
+            byte [] buffer = new byte[1024]; // 图片文件流缓存池
+            while(is.read(buffer) != -1){
+                os.write(buffer);
+            }
+            os.flush();
+        } catch (IOException e){
+            e.printStackTrace();
+        } finally{
+
+        }
+    }
+
+
 
 }

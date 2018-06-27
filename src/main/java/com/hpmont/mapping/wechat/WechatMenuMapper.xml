@@ -7,26 +7,29 @@
     <result column="menu_type" jdbcType="INTEGER" property="menuType" />
     <result column="menu_name" jdbcType="VARCHAR" property="menuName" />
     <result column="menu_url" jdbcType="VARCHAR" property="menuUrl" />
+    <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="order_num" jdbcType="INTEGER" property="orderNum" />
     <result column="manual_type" jdbcType="INTEGER" property="manualType" />
     <result column="version_type" jdbcType="INTEGER" property="versionType" />
-    <result column="status" jdbcType="BIT" property="status" />
+    <result column="language_type" jdbcType="TINYINT" property="languageType" />
+    <result column="department_type" jdbcType="TINYINT" property="departmentType" />
+    <result column="status" jdbcType="TINYINT" property="status" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <resultMap id="MenuResultMap" type="com.hpmont.domain.wechat.WechatMenu" extends="BaseResultMap">
-    <collection property="children" ofType="WechatMenu" column="{parentId=id,versionType=version_type}" select="findMenuByParentId"/>
+    <collection property="children" ofType="WechatMenu" column="{parentId=id,versionType=version_type,departmentType=department_type,languageType=language_type}" select="findMenuByParentId"/>
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, parent_id, menu_type, menu_name, menu_url, description, order_num, manual_type,
-    version_type, status, gmt_create, gmt_modified
+    id, parent_id, menu_type, menu_name, menu_url, icon_url, description, order_num,
+    manual_type, version_type, language_type, department_type, status, gmt_create, gmt_modified
   </sql>
   <select id="findWechatMenu" resultMap="MenuResultMap" parameterType="com.hpmont.domain.search.SearchMenu" >
     select
     wm.id, wm.parent_id, wm.menu_type, wm.menu_name, wm.menu_url, wm.description, wm.order_num, wm.manual_type,
-    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName
+    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName  , wm.department_type ,wm.language_type
     from wechat_menu wm
     LEFT JOIN dict_manual dm ON wm.manual_type=dm.id
     LEFT JOIN dict_version dv ON wm.version_type=dv.id
@@ -35,25 +38,37 @@
     <if test="versionType!=null and versionType!=0">
       AND wm.version_type =#{versionType,jdbcType=INTEGER}
     </if>
+    <if test="departmentType!=null and departmentType!=''">
+      AND  wm.department_type =#{departmentType,jdbcType=INTEGER}
+    </if>
+    <if test="languageType!=null and languageType!=''">
+      AND  wm.language_type =#{languageType,jdbcType=INTEGER}
+    </if>
     ORDER  BY  wm.order_num
   </select>
 
   <select id="findMenuByParentId" resultMap="MenuResultMap" >
     select
     wm.id, wm.parent_id, wm.menu_type, wm.menu_name, wm.menu_url, wm.description, wm.order_num, wm.manual_type,
-    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName
+    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName  , wm.department_type ,wm.language_type
     from wechat_menu wm
     LEFT JOIN dict_manual dm ON wm.manual_type=dm.id
     LEFT JOIN dict_version dv ON wm.version_type=dv.id
     WHERE wm.version_type=#{versionType}
     AND wm.parent_id=#{parentId}
+    <if test="departmentType!=null and departmentType!=''">
+      AND  wm.department_type =#{departmentType,jdbcType=INTEGER}
+    </if>
+    <if test="languageType!=null and languageType!=''">
+      AND  wm.language_type =#{languageType,jdbcType=INTEGER}
+    </if>
     ORDER  BY  wm.order_num
   </select>
 
   <select id="findMenuByApp" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchMenu" >
     select
     wm.id, wm.parent_id, wm.menu_type, wm.menu_name, wm.menu_url, wm.description, wm.order_num, wm.manual_type,
-    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName
+    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName ,wm.icon_url
     from wechat_menu wm
     LEFT JOIN dict_manual dm ON wm.manual_type=dm.id
     LEFT JOIN dict_version dv ON wm.version_type=dv.id
@@ -61,7 +76,15 @@
     <if test="menuType!=null and menuType!='' ">
     AND wm.menu_type=#{menuType,jdbcType=INTEGER}
      </if>
+    <if test="versionType!=null and versionType!='' ">
       AND wm.version_type =#{versionType,jdbcType=INTEGER}
+     </if>
+    <if test="departmentType!=null and departmentType!=''">
+      AND  wm.department_type =#{departmentType,jdbcType=INTEGER}
+    </if>
+    <if test="languageType!=null and languageType!=''">
+      AND  wm.language_type =#{languageType,jdbcType=INTEGER}
+    </if>
     AND  wm.status=1
     ORDER  BY  wm.order_num
   </select>
@@ -72,14 +95,16 @@
   </delete>
   <insert id="insert" parameterType="com.hpmont.domain.wechat.WechatMenu">
     insert into wechat_menu (id, parent_id, menu_type,
-      menu_name, menu_url, description,
-      order_num, manual_type, version_type,
+      menu_name, menu_url, icon_url,
+      description, order_num, manual_type,
+      version_type, language_type, department_type,
       status, gmt_create, gmt_modified
       )
     values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{menuType,jdbcType=INTEGER},
-      #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
-      #{orderNum,jdbcType=INTEGER}, #{manualType,jdbcType=INTEGER}, #{versionType,jdbcType=INTEGER},
-      #{status,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, #{iconUrl,jdbcType=VARCHAR},
+      #{description,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}, #{manualType,jdbcType=INTEGER},
+      #{versionType,jdbcType=INTEGER}, #{languageType,jdbcType=TINYINT}, #{departmentType,jdbcType=TINYINT},
+      #{status,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
       )
   </insert>
 
@@ -98,6 +123,9 @@
       <if test="menuUrl != null">
         menu_url = #{menuUrl,jdbcType=VARCHAR},
       </if>
+      <if test="iconUrl != null">
+        icon_url = #{iconUrl,jdbcType=VARCHAR},
+      </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
@@ -110,8 +138,14 @@
       <if test="versionType != null">
         version_type = #{versionType,jdbcType=INTEGER},
       </if>
+      <if test="languageType != null">
+        language_type = #{languageType,jdbcType=TINYINT},
+      </if>
+      <if test="departmentType != null">
+        department_type = #{departmentType,jdbcType=TINYINT},
+      </if>
       <if test="status != null">
-        status = #{status,jdbcType=BIT},
+        status = #{status,jdbcType=TINYINT},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
