@@ -14,6 +14,8 @@ public class WechatMenu {
 
     private String menuUrl;
 
+    private String color;
+
     private String iconUrl;
 
     private String description;
@@ -182,5 +184,13 @@ public class WechatMenu {
 
     public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

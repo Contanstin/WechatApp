@@ -82,6 +82,7 @@ public class WechatDataController extends BaseController {
     public List<DictVersion> findVersionType(@RequestBody SearchCommon search){
         List<DictVersion> list=null;
         try {
+            search.setStatus(1);
             list= versionService.findVersionType(search);
         } catch (Exception e) {
             logger.error("查询软件版本失败",e);

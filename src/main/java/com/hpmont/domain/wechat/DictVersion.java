@@ -1,15 +1,27 @@
 package com.hpmont.domain.wechat;
 
+import java.util.Date;
+
 public class DictVersion {
     private Integer id;
 
     private String name;
 
-    private Integer languageType;
+    private Byte languageType;
 
-    private Integer departmentType;
+    private Byte departmentType;
+
+    private String color;
+
+    private String iconUrl;
 
     private String description;
+
+    private Byte status;
+
+    private Date gmtCreate;
+
+    private Date gmtModified;
 
     public Integer getId() {
         return id;
@@ -27,6 +39,38 @@ public class DictVersion {
         this.name = name == null ? null : name.trim();
     }
 
+    public Byte getLanguageType() {
+        return languageType;
+    }
+
+    public void setLanguageType(Byte languageType) {
+        this.languageType = languageType;
+    }
+
+    public Byte getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Byte departmentType) {
+        this.departmentType = departmentType;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color == null ? null : color.trim();
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl == null ? null : iconUrl.trim();
+    }
+
     public String getDescription() {
         return description;
     }
@@ -35,19 +79,27 @@ public class DictVersion {
         this.description = description == null ? null : description.trim();
     }
 
-    public Integer getLanguageType() {
-        return languageType;
+    public Byte getStatus() {
+        return status;
     }
 
-    public void setLanguageType(Integer languageType) {
-        this.languageType = languageType;
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 
-    public Integer getDepartmentType() {
-        return departmentType;
+    public Date getGmtCreate() {
+        return gmtCreate;
     }
 
-    public void setDepartmentType(Integer departmentType) {
-        this.departmentType = departmentType;
+    public void setGmtCreate(Date gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public Date getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(Date gmtModified) {
+        this.gmtModified = gmtModified;
     }
 }

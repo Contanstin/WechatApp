@@ -6,10 +6,16 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="language_type" jdbcType="TINYINT" property="languageType" />
     <result column="department_type" jdbcType="TINYINT" property="departmentType" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="icon_url" jdbcType="VARCHAR" property="iconUrl" />
     <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, name, language_type, department_type, description
+    id, name, language_type, department_type, color, icon_url, description, status, gmt_create,
+    gmt_modified
   </sql>
   <select id="findVersionType" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchCommon" >
     select 
@@ -22,6 +28,9 @@
     <if test="languageType!=null and languageType!=''">
       AND language_type =#{languageType,jdbcType=INTEGER}
     </if>
+    <if test="status!=null and status!=''">
+      AND status =#{status,jdbcType=INTEGER}
+    </if>
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -30,9 +39,13 @@
   </delete>
   <insert id="insert" parameterType="com.hpmont.domain.wechat.DictVersion">
     insert into dict_version (id, name, language_type,
-      department_type, description)
+      department_type, color, icon_url,
+      description, status, gmt_create,
+      gmt_modified)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{languageType,jdbcType=TINYINT},
-      #{departmentType,jdbcType=TINYINT}, #{description,jdbcType=VARCHAR})
+      #{departmentType,jdbcType=TINYINT}, #{color,jdbcType=VARCHAR}, #{iconUrl,jdbcType=VARCHAR},
+      #{description,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{gmtCreate,jdbcType=TIMESTAMP},
+      #{gmtModified,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.hpmont.domain.wechat.DictVersion">
     update dict_version
@@ -46,8 +59,23 @@
       <if test="departmentType != null">
         department_type = #{departmentType,jdbcType=TINYINT},
       </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="iconUrl != null">
+        icon_url = #{iconUrl,jdbcType=VARCHAR},
+      </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="gmtCreate != null">
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null">
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}

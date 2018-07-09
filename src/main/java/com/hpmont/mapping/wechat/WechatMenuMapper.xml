@@ -68,7 +68,7 @@
   <select id="findMenuByApp" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchMenu" >
     select
     wm.id, wm.parent_id, wm.menu_type, wm.menu_name, wm.menu_url, wm.description, wm.order_num, wm.manual_type,
-    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName ,wm.icon_url
+    wm.version_type, wm.status,dm.`name` AS manualName ,dv.`name` AS versionName ,wm.icon_url ,wm.color
     from wechat_menu wm
     LEFT JOIN dict_manual dm ON wm.manual_type=dm.id
     LEFT JOIN dict_version dv ON wm.version_type=dv.id
