@@ -21,7 +21,7 @@
   </sql>
   <select id="findManualList" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchManual" >
     select
-    sm.id, sm.manual_name, sm.real_name,sm.manual_type, dm.name AS manualName, sm.manual_format,
+    sm.id, sm.manual_name, sm.real_name,sm.manual_type, dm.name , sm.manual_format,
     sm.manual_url, sm.status,dv.name AS versionName
     from wechat_manual as sm
     LEFT JOIN

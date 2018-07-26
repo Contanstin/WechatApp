@@ -10,13 +10,16 @@ import com.hpmont.domain.wechat.WechatManual;
 import com.hpmont.domain.wechat.WechatFault;
 import com.hpmont.domain.wechat.WechatMenu;
 import com.hpmont.service.wechat.*;
+import com.hpmont.service.wechat.impl.CustomerJsonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 徐 on 2018/6/11.
@@ -39,6 +42,10 @@ public class WechatDataController extends BaseController {
 
     @Autowired
     private IDictVersionService versionService;
+
+    @Autowired
+    private CustomerJsonService customerJsonService;
+
 
     @RequestMapping(value = "/findFaultListByApp")
     @ResponseBody
@@ -100,6 +107,36 @@ public class WechatDataController extends BaseController {
             list= manualService.findManualListByApp(search);
         } catch (Exception e) {
             logger.error("查询手册种类失败",e);
+        }
+        return list;
+    }
+
+    @RequestMapping(value = "/findDownloadUrlByApp")
+    @ResponseBody
+    public String findDownloadUrlByApp(@RequestBody Integer versionType){
+        String url="";
+        try {
+            if (versionType==1){
+                url="https://www.pgyer.com/USza";
+            }else if (versionType==2){
+                url="https://www.pgyer.com/T3vS";
+            }
+
+        } catch (Exception e) {
+            logger.error("查询下载地址失败",e);
+        }
+        return url;
+    }
+
+    @RequestMapping(value = "/findCustomerJsonByApp")
+    @ResponseBody
+    public List<Map<String, String>> findCustomerJsonByApp(){
+        List<Map<String, String>> list=null;
+        try {
+            list = customerJsonService.getCustomer();
+
+        } catch (Exception e) {
+            logger.error("返回服务人员json失败",e);
         }
         return list;
     }
