@@ -72,7 +72,7 @@ public class WechatManualController extends BaseController{
                         if (manual.getManualName()==null)
                         manual.setManualName(filename.substring(0, filename.lastIndexOf(".")));
                         manual.setManualFormat(filename.substring(filename.lastIndexOf(".") + 1));
-                        realName= new Date().getTime()+"."+manual.getManualFormat();
+                        realName= System.currentTimeMillis()+"."+manual.getManualFormat();
                         multipartFile.transferTo(new File(baseUrl + realName));
                         manual.setManualUrl(projectPath+"manual/download?realName="+realName);
                         manual.setRealName(realName);

@@ -35,6 +35,9 @@
     <if test="versionType!=null and versionType!=0">
       AND version_type =#{versionType,jdbcType=INTEGER}
     </if>
+    <if test="manualType!=null and manualType!=0">
+      AND manual_type =#{manualType,jdbcType=INTEGER}
+    </if>
     <if test="departmentType!=null and departmentType!=''">
       AND department_type =#{departmentType,jdbcType=INTEGER}
     </if>

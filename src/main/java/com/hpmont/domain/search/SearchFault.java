@@ -13,6 +13,16 @@ public class SearchFault extends SearchCommon{
 
     private Integer versionType;
 
+    private Integer manualType;
+
+    public Integer getManualType() {
+        return manualType;
+    }
+
+    public void setManualType(Integer manualType) {
+        this.manualType = manualType;
+    }
+
     public String getFaultName() {
         return faultName;
     }
