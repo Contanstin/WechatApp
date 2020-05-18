@@ -29,6 +29,7 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 	/** 默认忽略地址 */
 	private static final String[] DEFAULT_IGNORE_URL = new String[] { "/common/main.jhtml", "/common/captcha.jhtml",
 			"/login.jhtml","/slideshow/showPic","/slideshow/showPic","/slideshow/download","/manual/download" };
+
 	/** antPathMatcher */
 	private static AntPathMatcher antPathMatcher = new AntPathMatcher();
 	/** 忽略参数 */

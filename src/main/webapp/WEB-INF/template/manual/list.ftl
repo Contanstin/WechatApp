@@ -58,8 +58,11 @@
             <th>手册类型</th>
             <th>格式</th>
             <th>url</th>
+            [#--<th>图片</th>--]
+            <th>排序</th>
             <th>软件版本</th>
             <th>是否使用</th>
+            <th>是否推荐</th>
             <th>操作</th>
         </tr>
     [#list page.list as obj]
@@ -68,12 +71,20 @@
             <td>${obj.name}</td>
             <td>${obj.manualFormat}</td>
             <td>${obj.manualUrl}</td>
+            [#--<td>${obj.manualUrl}</td>--]
+            <td>${obj.orderNum}</td>
             <td>${obj.versionName}</td>
             <td>
                 [#if obj.status==1 ]启用
                 [#elseif obj.status==2 ]禁用
                 [/#if]</td>
-            <td>   <button onclick="modify('${obj.id}','${obj.realName}','${obj.manualName}','${obj.manualType}', '${obj.status}');
+            <td>
+                [#if obj.getIsRecommend()==1 ]推荐
+                [#elseif obj.getIsRecommend()==2 ]不推荐
+                [/#if]
+            </td>
+            <td>
+            <button onclick="modify('${obj.id}','${obj.realName}','${obj.manualName}','${obj.manualType}', '${obj.status}','${obj.getImageUrl()}','${obj.orderNum}');
                   return false;">修改</button>
                 <button onclick="deleteObj('${obj.id}','${obj.realName}');return false;">删除</button>
             </td>
@@ -108,9 +119,21 @@
                 </td>
             </tr>
             <tr>
+                <td>排序:</td>
+                <td><input type="text"  name="orderNum" id="qorderNum" value="" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" ></td>
+            </tr>
+            <tr>
                 <td>软件版本:</td>
                 <td colspan="2">
                     <select name="versionType" class="versionType"  >
+
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>绑定图片:</td>
+                <td colspan="2">
+                    <select name="imageUrl" class="imageUrl"  >
 
                     </select>
                 </td>
@@ -123,6 +146,20 @@
                         <option  value="2" >停用</option>
                     </select>
                 </td>
+            </tr>
+
+            <tr>
+                <td>是否推荐:</td>
+                <td colspan="2">
+                    <select  id="IsRecommend" name="IsRecommend">
+                        <option  value="1" >推荐</option>
+                        <option  value="2" >不推荐</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>视频地址:</td>
+                <td><input type="text"  name="videoUrl" id="qvideoUrl" value=""></td>
             </tr>
             <tr>
                 <td>请选择文件:</td>
@@ -147,6 +184,7 @@
     $(function(){
         var manualType = '${search.manualType}';
         var versionType = '${search.versionType}';
+        var imageUrl = '';
         var departmentType = '${search.departmentType}';
         if(departmentType){
             $('.departmentType').val(departmentType);
@@ -197,6 +235,30 @@
                 };
             }
         });
+        //获取图片
+        $.ajax({
+            url:'../slideshow/findImages.jhtml',
+            type:'POST',
+            dataType: 'json' ,
+            data:{
+                departmentType:departmentType
+            },
+            success:function(data){
+                $(".imageUrl").empty()
+                $(".imageUrl").append("<option  value=''>请选择</option>")
+                for (var i = 0; i < data.length; i++) {
+                    var str="";
+                    if (data[i].imageUrl==parseInt(imageUrl)){
+                        str = "<option  value='"+data[i].imageUrl+"' selected='selected' > "
+                                +data[i].imageName+"</option>"
+                    }else {
+                        str = "<option  value='"+data[i].imageUrl+"'> "
+                                +data[i].imageName+"</option>"
+                    }
+                    $(".imageUrl").append(str)
+                };
+            }
+        });
 
         var manualName = '${search.manualName}';
         if(manualName){
@@ -207,6 +269,9 @@
         }
         if(versionType){
             $('#versionType').val(versionType);
+        }
+        if(imageUrl){
+            $('#imageUrl').val(imageUrl);
         }
 
     });
@@ -236,16 +301,26 @@
         $('#dataDiv').show(time);
     }
 
-    var modify = function(id,realName,manualName, manualType, status){
+    var modify = function(id,realName,manualName, manualType, status,recommend,image,orderNum,videoUrl){
         $('#id').val(id);
         $('#realName').val(realName);
         $('#qmanualName').val(manualName);
         $('#qmanualType').val(manualType);
+        $('#IsRecommend').val(recommend);
+        $('#qorderNum').val(orderNum);
+        $('#imageUrl').val(image);
+        $('#qvideoUrl').val(videoUrl);
         if(status==1){
             $('#qstatus').val(1);
         } else {
             $('#qstatus').val(2);
         }
+        if(recommend==1){
+            $('#IsRecommend').val(1);
+        } else {
+            $('#IsRecommend').val(2);
+        }
+
         $('#back').show();
         $('#dataDiv').show(time);
     }

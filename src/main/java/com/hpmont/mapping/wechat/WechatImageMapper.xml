@@ -104,4 +104,10 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--绑定图片-->
+  <select id="findImages" resultMap="BaseResultMap"  >
+    SELECT * from wechat_image WHERE department_type=#{departmentType,jdbcType=INTEGER}
+  </select>
+
+
 </mapper>

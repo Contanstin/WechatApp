@@ -43,6 +43,8 @@ public class WechatManualController extends BaseController{
         try {
             PageInfo<WechatManual> list = manualService.findManualList(search);
             model.addAttribute("page",list);
+            List<WechatManual> arr=list.getList();
+           // String s= arr.get(1).getIsRecommend().toString();
             model.addAttribute("search",search);
         } catch (Exception e) {
             logger.error("查询手册列表出错", e);
@@ -109,6 +111,8 @@ public class WechatManualController extends BaseController{
 
     @RequestMapping("/download")
     public ResponseEntity<byte[]> String(String realName) throws IOException {
+//        记录下载次数
+        int flag=manualService.updateDownloadCount(realName);
         File file=new File(baseUrl+realName);
         return getResponse(realName,file);
     }

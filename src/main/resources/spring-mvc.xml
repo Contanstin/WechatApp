@@ -45,7 +45,14 @@
 			/>
 		</mvc:interceptor>
 	</mvc:interceptors>
-	
+	<!--配置静态资源-->
+	<!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">-->
+		<!--<property name="prefix" value="/WEB-INF/jsp/"/>-->
+		<!--<property name="suffix" value=".jsp"/>&lt;!&ndash;可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑  &ndash;&gt;-->
+		<!--<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />-->
+	<!--</bean>-->
+	<!--<mvc:default-servlet-handler/>-->
+
 	<!-- 完成请求和注解POJO的映射 -->
 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" />
 	<bean id="freeMarkerConfigurer"

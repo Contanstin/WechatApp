@@ -5,12 +5,10 @@ import com.hpmont.domain.search.SearchFault;
 import com.hpmont.domain.search.SearchManual;
 import com.hpmont.domain.search.SearchMenu;
 import com.hpmont.domain.search.SearchCommon;
-import com.hpmont.domain.wechat.DictVersion;
-import com.hpmont.domain.wechat.WechatManual;
-import com.hpmont.domain.wechat.WechatFault;
-import com.hpmont.domain.wechat.WechatMenu;
+import com.hpmont.domain.wechat.*;
 import com.hpmont.service.wechat.*;
 import com.hpmont.service.wechat.impl.CustomerJsonService;
+import com.hpmont.service.wechat.impl.WechatManualService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +40,8 @@ public class WechatDataController extends BaseController {
 
     @Autowired
     private IDictVersionService versionService;
+    @Autowired
+    private IDictManualService ManualService;
 
     @Autowired
     private CustomerJsonService customerJsonService;
@@ -89,7 +89,7 @@ public class WechatDataController extends BaseController {
     public List<DictVersion> findVersionType(@RequestBody SearchCommon search){
         List<DictVersion> list=null;
         try {
-            search.setStatus(1);
+//            search.setStatus(1);
             list= versionService.findVersionType(search);
         } catch (Exception e) {
             logger.error("查询软件版本失败",e);
@@ -106,7 +106,7 @@ public class WechatDataController extends BaseController {
         try {
             list= manualService.findManualListByApp(search);
         } catch (Exception e) {
-            logger.error("查询手册种类失败",e);
+            logger.error("查询手册失败",e);
         }
         return list;
     }
@@ -120,6 +120,12 @@ public class WechatDataController extends BaseController {
                 url="https://www.pgyer.com/USza";
             }else if (versionType==2){
                 url="https://www.pgyer.com/T3vS";
+            }
+            else if (versionType==3){
+                url="https://www.pgyer.com/76oQ";
+            }
+            else if(versionType==4){
+                url="https://www.pgyer.com/cwuT";
             }
 
         } catch (Exception e) {
@@ -137,6 +143,44 @@ public class WechatDataController extends BaseController {
 
         } catch (Exception e) {
             logger.error("返回服务人员json失败",e);
+        }
+        return list;
+    }
+    //推荐书籍
+    @RequestMapping(value = "/findRecommendByApp")
+    @ResponseBody
+    public List<WechatManual> findRecommendByApp(){
+        List<WechatManual> list=null;
+        try {
+            list= manualService.findRecommendByApp();
+        } catch (Exception e) {
+            logger.error("微信查询推荐书籍失败",e);
+        }
+        return list;
+    }
+
+    //排行
+    @RequestMapping(value = "/findDownloadRanking")
+    @ResponseBody
+    public List<WechatManual> findDownloadRanking(){
+        List<WechatManual> list=null;
+        try {
+            list= manualService.findDownloadRanking();
+        } catch (Exception e) {
+            logger.error("微信查询排行失败",e);
+        }
+        return list;
+    }
+
+    //按手册类型
+    @RequestMapping(value = "/findManualTypeByApp")
+    @ResponseBody
+    public List<DictManual> findManualTypeByApp(@RequestBody SearchCommon search){
+        List<DictManual> list=null;
+        try {
+            list= ManualService.findManualType(search);
+        } catch (Exception e) {
+            logger.error("手册类型查询失败",e);
         }
         return list;
     }

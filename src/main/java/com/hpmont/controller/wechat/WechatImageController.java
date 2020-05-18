@@ -4,7 +4,9 @@ import com.github.pagehelper.PageInfo;
 import com.hpmont.controller.BaseController;
 import com.hpmont.domain.page.PageSearch;
 import com.hpmont.domain.search.SearchCommon;
+import com.hpmont.domain.search.SearchMenu;
 import com.hpmont.domain.wechat.WechatImage;
+import com.hpmont.domain.wechat.WechatMenu;
 import com.hpmont.service.wechat.IWechatImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,15 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by 徐 on 2018/5/21.
@@ -165,6 +165,16 @@ public class WechatImageController extends BaseController{
         }
     }
 
-
+    @ResponseBody
+    @RequestMapping(value = "/findImages")
+    public List<WechatImage> findImages(String departmentType){
+        List<WechatImage> list=null;
+        try {
+            list = imageService.findImages(departmentType);
+        } catch (Exception e) {
+            logger.error("微信图片查询出错", e);
+        }
+        return list;
+    }
 
 }

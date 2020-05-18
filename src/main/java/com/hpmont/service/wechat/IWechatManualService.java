@@ -16,8 +16,11 @@ public interface IWechatManualService {
     void insert(WechatManual manual);
 
     void update(WechatManual manual);
+    int updateDownloadCount(String realName);
 
     void delete(Integer id);
 
     List<WechatManual> findManualListByApp(SearchManual search);
+    List<WechatManual> findRecommendByApp();
+    List<WechatManual> findDownloadRanking();
 }

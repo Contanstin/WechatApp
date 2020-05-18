@@ -31,6 +31,15 @@ public class WechatManual {
 
     private Date gmtModified;
 
+    private Integer IsRecommend;
+
+    private Integer downloadCount;
+
+    private String imageUrl;
+    private String imageName;
+    private String videoUrl;
+    private Integer orderNum;
+
     public Integer getId() {
         return id;
     }
@@ -111,6 +120,13 @@ public class WechatManual {
         this.status = status;
     }
 
+    public Integer getIsRecommend() {
+        return IsRecommend;
+    }
+    public void setIsRecommend(Integer IsRecommend) {
+        this.IsRecommend = IsRecommend;
+    }
+
     public Date getGmtCreate() {
         return gmtCreate;
     }
@@ -142,4 +158,41 @@ public class WechatManual {
     public void setName(String name) {
         this.name = name;
     }
+
+    public Integer getDownloadCount() {
+        return downloadCount;
+    }
+    public void setDownloadCount(Integer downloadCount) {
+        this.downloadCount = downloadCount;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+    public Integer getOrderNum() {
+        return orderNum;
+    }
+    public void setOrderNum(Integer orderNum) {
+        this.orderNum = orderNum;
+    }
+
 }

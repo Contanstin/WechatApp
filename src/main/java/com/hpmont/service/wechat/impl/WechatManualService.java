@@ -44,6 +44,11 @@ public class WechatManualService implements IWechatManualService{
     }
 
     @Override
+    public int updateDownloadCount(String realName) {
+        return  manualDao.updateDownloadCount(realName);
+    }
+
+    @Override
     public void delete(Integer id) {
         manualDao.deleteByPrimaryKey(id);
     }
@@ -51,5 +56,15 @@ public class WechatManualService implements IWechatManualService{
     @Override
     public List<WechatManual> findManualListByApp(SearchManual search) {
         return manualDao.findManualListByApp(search);
+    }
+
+    @Override
+    public List<WechatManual> findRecommendByApp() {
+         return manualDao.findRecommendByApp();
+    }
+
+    @Override
+    public List<WechatManual> findDownloadRanking() {
+        return manualDao.findDownloadRanking();
     }
 }

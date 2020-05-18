@@ -14,15 +14,20 @@
     <result column="status" property="status" jdbcType="BIT" />
     <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
     <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    <result column="is_recommend" property="IsRecommend" jdbcType="TINYINT" />
+    <result column="count" property="downloadCount" jdbcType="INTEGER" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="INTEGER" />
+    <result column="video_url" property="videoUrl" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, manual_name, real_name, manual_type, manual_format, manual_url, version_type, 
-    language_type, department_type, status, gmt_create, gmt_modified
+    language_type, department_type, status, gmt_create, gmt_modified,order_num,video_url
   </sql>
   <select id="findManualList" resultMap="BaseResultMap" parameterType="com.hpmont.domain.search.SearchManual" >
     select
     sm.id, sm.manual_name, sm.real_name,sm.manual_type, dm.name , sm.manual_format,
-    sm.manual_url, sm.status,dv.name AS versionName
+    sm.manual_url, sm.status,sm.is_recommend,sm.image_url,dv.name AS versionName,sm.order_num,sm.video_url
     from wechat_manual as sm
     LEFT JOIN
     dict_manual dm ON  sm.manual_type=dm.id
@@ -44,11 +49,30 @@
     <if test="languageType!=null and languageType!=''">
       AND sm.language_type =#{languageType,jdbcType=INTEGER}
     </if>
+    ORDER  BY  order_num
+  </select>
+<!--查询推荐-->
+
+  <select id="findRecommendByApp" resultMap="BaseResultMap"  >
+    select
+    sm.id, sm.manual_name, sm.real_name,sm.manual_type, dm.name , sm.manual_format,
+    sm.manual_url, sm.status,sm.is_recommend,sm.image_url,dv.name AS versionName
+    from wechat_manual as sm
+    LEFT JOIN
+    dict_manual dm ON  sm.manual_type=dm.id
+    LEFT JOIN
+    dict_version dv ON  sm.version_type=dv.id
+    where 1=1 AND sm.is_recommend=1
+  </select>
+
+
+  <select id="findDownloadRanking" resultMap="BaseResultMap"  >
+    SELECT * from wechat_manual  ORDER BY count DESC  limit 0,10
   </select>
 
   <select id="findManualListByApp" resultMap="BaseResultMap"  parameterType="com.hpmont.domain.search.SearchManual">
     select
-    id, manual_name,manual_url
+    id, manual_name,manual_url,image_url,video_url
     from wechat_manual
     WHERE status=1
     <if test="manualName!=null and manualName!=''">
@@ -66,6 +90,7 @@
     <if test="languageType!=null and languageType!=''">
       AND language_type =#{languageType,jdbcType=INTEGER}
     </if>
+    ORDER  BY  order_num
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -76,12 +101,13 @@
     insert into wechat_manual (id, manual_name, real_name, 
       manual_type, manual_format, manual_url, 
       version_type, language_type, department_type, 
-      status, gmt_create, gmt_modified
+      status, gmt_create, gmt_modified,is_recommend,image_url,order_num,video_url
       )
     values (#{id,jdbcType=INTEGER}, #{manualName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, 
       #{manualType,jdbcType=TINYINT}, #{manualFormat,jdbcType=VARCHAR}, #{manualUrl,jdbcType=VARCHAR}, 
       #{versionType,jdbcType=TINYINT}, #{languageType,jdbcType=TINYINT}, #{departmentType,jdbcType=TINYINT}, 
-      #{status,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      #{status,jdbcType=BIT}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}, #{IsRecommend,jdbcType=TINYINT},
+       #{imageUrl,jdbcType=VARCHAR},#{orderNum,jdbcType=INTEGER},#{videoUrl,jdbcType=VARCHAR}
       )
   </insert>
 
@@ -121,8 +147,26 @@
       <if test="gmtModified != null" >
         gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
       </if>
+      <if test="IsRecommend != null" >
+        is_recommend = #{IsRecommend,jdbcType=TINYINT},
+      </if>
+      <if test="imageUrl != null" >
+        image_url = #{imageUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null" >
+        order_num = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="videoUrl != null" >
+        video_url = #{videoUrl,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateDownloadCount" parameterType="java.lang.String">
+
+    UPDATE wechat_manual SET count = count+ 1 WHERE real_name=#{realName,jdbcType=VARCHAR}
+
   </update>
 
 </mapper>

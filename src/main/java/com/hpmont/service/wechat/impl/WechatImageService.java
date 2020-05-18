@@ -50,4 +50,14 @@ public class WechatImageService implements IWechatImageService {
     public List<String> findSlideshowUrlByApp(SearchCommon search) {
         return imageDao.findSlideshowUrlByApp(search);
     }
+
+    @Override
+    public List<WechatImage> findImages(String departmentType) {
+        return imageDao.findImages(departmentType);
+    }
+
+//    @Override
+//    public List<WechatImage> findImages(String departmentType ) {
+//        return imageDao.findImages(departmentType);
+//    }
 }

@@ -19,4 +19,6 @@ public interface IWechatImageService {
     int delete(Integer id);
 
     List<String> findSlideshowUrlByApp(SearchCommon search);
+
+    List<WechatImage> findImages(String departmentType);
 }
